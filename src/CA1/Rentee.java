@@ -2,28 +2,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package jprg.ca1;
+package CA1;
 
 /**
  *
  * @author leong
  */
 public class Rentee {
-    private int memberID;
+    private String memberID;
     private String name;
     private Comic[] comics;
 
-    public Rentee(int memberID, String name, Comic[] comics) {
+    public Rentee(String memberID, String name, Comic[] comics) {
         this.memberID = memberID;
         this.name = name;
         this.comics = comics;
     }
 
-    public int getMemberID() {
+    public String getMemberID() {
         return memberID;
     }
 
-    public void setMemberID(int memberID) {
+    public void setMemberID(String memberID) {
         this.memberID = memberID;
     }
 
