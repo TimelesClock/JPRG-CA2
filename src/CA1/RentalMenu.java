@@ -21,11 +21,13 @@ public class RentalMenu {
         UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 15));
         RentalSystem rental = new RentalSystem();
         rental.createComic();
-        String UserInput = "0";
+        rental.createRentee();
+        String UserInput;
         HashMap<String, Runnable> dict = new HashMap<String, Runnable>();
 
         dict.put("1", () -> rental.displayComic());
         dict.put("2", () -> rental.findComic());
+        dict.put("3",()-> rental.findMember());
 
         String menu = """
                       Enter your option:
