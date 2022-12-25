@@ -7,6 +7,11 @@ package CA1;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.util.Properties;
 /**
  *
  * @author leong
@@ -158,10 +163,28 @@ public class RentalSystem {
         );
 
     }
+    
+    public void export(String memberID, String name,String perms,String password) throws IOException{
+        Properties prop = new Properties();
+        
+        
+        prop.put("password", password);
+//        prop.put("comic", comic);
+        prop.put("permLevel", perms);
+        prop.put("name",name);
+        prop.put("memberID",memberID);
+        String path = new File("").getAbsolutePath() + "\\users\\"+memberID+".properties";
+        
+        
+        FileOutputStream out = new FileOutputStream(path,true);
+        prop.store(out,"Member Data");
+    }
+    
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException{
         RentalSystem rental = new RentalSystem();
         rental.createComic();
-        rental.displayComic();
+//        rental.export("123","test","1");
     }
 }

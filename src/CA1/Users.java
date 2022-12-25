@@ -11,9 +11,9 @@ package CA1;
 public class Users {
     private String memberID;
     private String name;
-    private byte permissionLevel;
+    private String permissionLevel;
     
-    public Users(String newMemberID, String newName,byte newPermissionLevel){
+    public Users(String newMemberID, String newName,String newPermissionLevel){
         this.memberID = newMemberID;
         this.name = newName;
         this.permissionLevel = newPermissionLevel;
@@ -35,11 +35,11 @@ public class Users {
         this.name = name;
     }
 
-    public byte getPermissionLevel() {
+    public String getPermissionLevel() {
         return permissionLevel;
     }
 
-    public void setPermissionLevel(byte permissionLevel) {
+    public void setPermissionLevel(String permissionLevel) {
         this.permissionLevel = permissionLevel;
     }
     

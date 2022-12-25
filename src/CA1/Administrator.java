@@ -10,6 +10,6 @@ package CA1;
  */
 public class Administrator extends Users{
     public Administrator(String memberID, String name) {
-        super(memberID,name,(byte)2);
+        super(memberID,name,"2");
     }
 }

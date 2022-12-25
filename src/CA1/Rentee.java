@@ -13,7 +13,7 @@ public class Rentee extends Users{
     private ArrayList<Comic> comics;
 
     public Rentee(String memberID, String name, ArrayList<Comic> comics) {
-        super(memberID,name,(byte)1);
+        super(memberID,name,"1");
         this.comics = comics;
     }
 
