@@ -5,7 +5,8 @@
 package CA1;
 
 import javax.swing.JOptionPane;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 /**
  *
  * @author leong
@@ -26,9 +27,9 @@ public class RentalSystem {
     }
 
     public void createRentee() {
-        renteeArr[0] = new Rentee("M220622", "Ariq Sulaiman", new Comic[]{comicArr[0], comicArr[1]});
-        renteeArr[1] = new Rentee("M220623", "Sayang Sulaiman", new Comic[]{comicArr[0], comicArr[2]});
-        renteeArr[2] = new Rentee("M220624", "Ben Dover", new Comic[]{comicArr[3], comicArr[2]});
+        renteeArr[0] = new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr[0],comicArr[1])));
+        renteeArr[1] = new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr[0],comicArr[2])));
+        renteeArr[2] = new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr[3],comicArr[2])));
 
     }
 
@@ -125,6 +126,37 @@ public class RentalSystem {
                     "Message",
                     JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    public void getEarning() {
+        int renteeNum = renteeArr.length;
+        double total = 0.0;
+
+        for (Rentee i : renteeArr) {
+            for (Comic o : i.getComics()) {
+                total += o.getCost() / 20.0;
+            }
+        }
+
+        double average = total / renteeNum;
+
+        String out = String.format("""
+                     Earning Per Day:
+                     ---------------
+                     There are %d Rentees in total.
+                     
+                     Average earning day based on numbers of rentees is $%.2f.
+                     
+                     Total earning per day is $%.2f.
+                     """, renteeNum, average, total);
+
+        JOptionPane.showMessageDialog(
+                null,
+                out,
+                "Message",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
     }
 
     public static void main(String[] args) {

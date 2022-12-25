@@ -15,6 +15,9 @@ import java.awt.Font;
 public class RentalMenu {
 
     public static void main(String[] args) {
+//        In a perfect world, sutff would be stored on a sql database
+        
+        
         String check[] = {"1", "2", "3", "4", "5"};
 
         UIManager.put("OptionPane.messageFont", new Font("Monospaced", Font.BOLD, 15));
@@ -28,6 +31,7 @@ public class RentalMenu {
         dict.put("1", () -> rental.displayComic());
         dict.put("2", () -> rental.findComic());
         dict.put("3",()-> rental.findMember());
+        dict.put("4",()-> rental.getEarning());
 
         String menu = """
                       Enter your option:
@@ -43,10 +47,15 @@ public class RentalMenu {
                 menu,
                 "Input",
                 JOptionPane.QUESTION_MESSAGE));
-        while (!("5".equals(UserInput))) {
+        
+        while (!("5".equals(UserInput) && !(UserInput == null))) {
             if (Arrays.asList(check).contains(UserInput)) {
                 dict.get(UserInput).run();
-            }else{
+            }
+            else if (UserInput == null){
+                break;
+            }
+            else{
                 JOptionPane.showMessageDialog(
                         null,
                         "Invalid option! Please enter in the range from 1 to 5.",

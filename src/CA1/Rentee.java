@@ -3,43 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package CA1;
+import java.util.ArrayList;
 
 /**
  *
  * @author leong
  */
-public class Rentee {
-    private String memberID;
-    private String name;
-    private Comic[] comics;
+public class Rentee extends Users{
+    private ArrayList<Comic> comics;
 
-    public Rentee(String memberID, String name, Comic[] comics) {
-        this.memberID = memberID;
-        this.name = name;
+    public Rentee(String memberID, String name, ArrayList<Comic> comics) {
+        super(memberID,name,(byte)1);
         this.comics = comics;
     }
 
-    public String getMemberID() {
-        return memberID;
-    }
-
-    public void setMemberID(String memberID) {
-        this.memberID = memberID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Comic[] getComics() {
+    public ArrayList<Comic> getComics() {
         return comics;
     }
 
-    public void setComics(Comic[] comics) {
+    public void setComics(ArrayList<Comic> comics) {
         this.comics = comics;
     }
     
