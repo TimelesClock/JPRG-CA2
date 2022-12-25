@@ -5,36 +5,39 @@
 package CA1;
 
 import javax.swing.JOptionPane;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.security.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
+
 /**
  *
  * @author leong
  */
 public class RentalSystem {
 
-    private Comic[] comicArr = new Comic[4];
-    private Rentee[] renteeArr = new Rentee[3];
+    private ArrayList<Comic> comicArr;
+    private ArrayList<Users> userArr;
 
     public RentalSystem() {
     }
 
     public void createComic() {
-        comicArr[0] = new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39);
-        comicArr[1] = new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99);
-        comicArr[2] = new Comic("978-0785198956", "Secret Wars", 312, 34.99);
-        comicArr[3] = new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99);
+        comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
+        comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
+        comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
+        comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
     }
 
     public void createRentee() {
-        renteeArr[0] = new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr[0],comicArr[1])));
-        renteeArr[1] = new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr[0],comicArr[2])));
-        renteeArr[2] = new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr[3],comicArr[2])));
+        userArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1)))));
+        userArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2)))));
+        userArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3)))));
 
     }
 
@@ -100,7 +103,7 @@ public class RentalSystem {
                 JOptionPane.QUESTION_MESSAGE);
         boolean flag = false;
         Rentee member = null;
-        for (Rentee renteeArr1 : renteeArr) {
+        for (Rentee renteeArr1 : userArr) {
             if ((renteeArr1).getMemberID().equals(userInput)) {
                 member = renteeArr1;
                 flag = true;
@@ -134,10 +137,10 @@ public class RentalSystem {
     }
 
     public void getEarning() {
-        int renteeNum = renteeArr.length;
+        int renteeNum = userArr.size();
         double total = 0.0;
 
-        for (Rentee i : renteeArr) {
+        for (Rentee i : userArr) {
             for (Comic o : i.getComics()) {
                 total += o.getCost() / 20.0;
             }
@@ -163,26 +166,75 @@ public class RentalSystem {
         );
 
     }
-    
-    public void export(String memberID, String name,String perms,String password) throws IOException{
+
+    public void exportRentee(String memberID, String name, ArrayList<Comic> comics, String password) throws IOException {
         Properties prop = new Properties();
-        
-        
+        String comic = "";
+
+        for (int i = 0; i < comics.size() - 1; i++) {
+            comic += comics.get(i).getTitle() + ",";
+        }
+        comic += comics.get(comics.size()).getTitle(); //No leading "," yay
+
         prop.put("password", password);
-//        prop.put("comic", comic);
-        prop.put("permLevel", perms);
-        prop.put("name",name);
-        prop.put("memberID",memberID);
-        String path = new File("").getAbsolutePath() + "\\users\\"+memberID+".properties";
-        
-        
-        FileOutputStream out = new FileOutputStream(path,true);
-        prop.store(out,"Member Data");
+        prop.put("comic", comic);
+        prop.put("permLevel", "1");
+        prop.put("name", name);
+        prop.put("memberID", memberID);
+
+        String path = new File("").getAbsolutePath() + "\\users\\" + memberID + ".properties";
+
+        FileOutputStream out = new FileOutputStream(path, true);
+        prop.store(out, "Member Data");
     }
-    
 
+    public void exportAdmin(String memberID, String name, String password) throws IOException {
+        Properties prop = new Properties();
 
-    public static void main(String[] args) throws IOException{
+        prop.put("password", password);
+        prop.put("permLevel", "2");
+        prop.put("name", name);
+        prop.put("memberID", memberID);
+
+        String path = new File("").getAbsolutePath() + "\\users\\" + memberID + ".properties";
+
+        FileOutputStream out = new FileOutputStream(path, true);
+        prop.store(out, "Admin Data");
+    }
+
+    public void importProperties() throws IOException{
+
+        List<String> results = new ArrayList<String>();
+
+        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                results.add(file.getName());
+            }
+        }
+        
+        for (String name : results){
+            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name +".properties");
+            
+            Properties prop = new Properties();
+            
+            prop.load(in);
+            
+            if("2".equals(prop.getProperty("permLevel"))){
+                
+            }
+        }
+    }
+
+    public String hash(String pw) throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        messageDigest.update(pw.getBytes());
+        String stringHash = new String(messageDigest.digest()); //So that i dont get a byte[]
+        //Note to self, use equals when comparing hash to verify pw don tuse ==
+        return stringHash;
+    }
+
+    public static void main(String[] args) throws IOException {
         RentalSystem rental = new RentalSystem();
         rental.createComic();
 //        rental.export("123","test","1");
