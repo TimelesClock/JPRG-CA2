@@ -16,12 +16,14 @@ public class Users {
     private String name;
     private String permissionLevel;
     private String password;
+    private String lastLogin;
     
-    public Users(String newMemberID, String newName,String newPermissionLevel,String unhashedPw) throws NoSuchAlgorithmException{
+    public Users(String newMemberID, String newName,String newPermissionLevel,String unhashedPw,String login) throws NoSuchAlgorithmException{
         this.memberID = newMemberID;
         this.name = newName;
         this.permissionLevel = newPermissionLevel;
         this.password = hash(unhashedPw);
+        this.lastLogin = login;
     }
     
     public String getMemberID() {
@@ -50,6 +52,10 @@ public class Users {
     
     public String getPassword(){
         return password;
+    }
+    
+    public String getLogin(){
+        return lastLogin;
     }
     
     public String hash(String pw) throws NoSuchAlgorithmException {

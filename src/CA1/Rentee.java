@@ -12,8 +12,8 @@ import java.security.NoSuchAlgorithmException;
 public class Rentee extends Users{
     private ArrayList<Comic> comics;
 
-    public Rentee(String memberID, String name, ArrayList<Comic> comics,String pw) throws NoSuchAlgorithmException {
-        super(memberID,name,"1",pw);
+    public Rentee(String memberID, String name, ArrayList<Comic> comics,String pw,String login) throws NoSuchAlgorithmException {
+        super(memberID,name,"1",pw,login);
         this.comics = comics;
     }
 

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -28,35 +29,38 @@ public class RentalSystem {
     public RentalSystem() {
     }
 
-    public void createComic() {
+    public void createComic() throws IOException {
         comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
         comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
         comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
         comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
-    }
-
-    public void createRentee() throws IOException,NoSuchAlgorithmException{
-        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))),"123"));
-        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))),"123"));
-        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))),"123"));
-        for (int i = 0;i < renteeArr.size();i++){
-            Rentee temp = renteeArr.get(i);
-            exportRentee(temp.getMemberID(),temp.getName(),temp.getComics(),temp.getPassword());
+        for (int i = 0; i < comicArr.size(); i++) {
+            exportComic(comicArr.get(i));
         }
     }
-    
-    public void createAdmin() throws IOException,NoSuchAlgorithmException{
-        adminArr.add(new Administrator("A220620","root","root"));
-        for (int i = 0;i < adminArr.size();i++){
+
+    public void createRentee() throws IOException, NoSuchAlgorithmException {
+        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), "123", "2022.12.26 23:34:47"));
+        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), "123", "2022.12.26 23:34:47"));
+        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), "123", "2022.12.26 23:34:47"));
+        for (int i = 0; i < renteeArr.size(); i++) {
+            Rentee temp = renteeArr.get(i);
+            exportRentee(temp.getMemberID(), temp.getName(), temp.getComics(), temp.getPassword(), temp.getLogin());
+        }
+    }
+
+    public void createAdmin() throws IOException, NoSuchAlgorithmException {
+        adminArr.add(new Administrator("A220620", "root", "root", "2022.12.26 23:34:47"));
+        for (int i = 0; i < adminArr.size(); i++) {
             Administrator temp = adminArr.get(i);
-            exportAdmin(temp.getMemberID(),temp.getName(),temp.getPassword());
+            exportAdmin(temp.getMemberID(), temp.getName(), temp.getPassword(), temp.getLogin());
         }
     }
 
     public void displayComic() {
         String text = String.format("%-15s| %-30s| %-7s| %-10s| %s\n%s\n", "ISBN-13", "Title", "Pages", "Price/Day", "Deposit", "-".repeat(80));
 
-        for (int index = 0;index < comicArr.size();index++) {
+        for (int index = 0; index < comicArr.size(); index++) {
             Comic i = comicArr.get(index);
             text += String.format("%-15s| %-30s| %-7d| %-10.2f| %.2f\n", i.getISBN(), i.getTitle(), i.getPageNum(), (i.getCost() / 20.0), (i.getCost() * 1.10));
         }
@@ -149,6 +153,35 @@ public class RentalSystem {
         }
     }
 
+    public void displayMember() throws IOException {
+        List<String> results = new ArrayList<String>();
+        String text = String.format("%-15s| %-20s| %-20s| %s\n%s\n", "Member ID", "Name", "Permission Level", "Last Login", "-".repeat(80));
+        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                results.add(file.getName());
+            }
+        }
+        for (String name : results) {
+
+            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name);
+            Properties prop = new Properties();
+
+            prop.load(in);
+            in.close();
+            System.out.println(prop.getProperty("login"));
+            text += String.format("%-15s| %-20s| %-20s| %s\n", prop.getProperty("memberID"), prop.getProperty("name"), prop.getProperty("permLevel"), prop.getProperty("login"));
+
+            
+        }
+        JOptionPane.showMessageDialog(
+                    null,
+                    text,
+                    "All Comics",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+    }
+
     public void getEarning() {
         int renteeNum = renteeArr.size();
         double total = 0.0;
@@ -180,26 +213,46 @@ public class RentalSystem {
 
     }
 
-    public void exportRentee(String memberID, String name, ArrayList<Comic> comics,String password) throws IOException {
+    public void exportComic(Comic comic) throws IOException {
+        Properties prop = new Properties();
+
+        prop.put("ISBN", comic.getISBN());
+        prop.put("Title", comic.getTitle() + "");
+        prop.put("PageNum", comic.getPageNum() + "");
+        prop.put("Cost", comic.getCost() + "");
+
+        File dir = new File(new File("").getAbsolutePath() + "\\comics");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
+        String path = new File("").getAbsolutePath() + "\\comics\\" + comic.getISBN() + ".properties";
+
+        FileOutputStream out = new FileOutputStream(path, false);
+        prop.store(out, "Comic Data");
+        out.close();
+    }
+
+    public void exportRentee(String memberID, String name, ArrayList<Comic> comics, String password, String login) throws IOException {
         Properties prop = new Properties();
         String comic = "";
 
-        for (int i = 0; i <= (comics.size() - 2); i+= 1) {
-            
+        for (int i = 0; i <= (comics.size() - 2); i += 1) {
+
             comic += comics.get(i).getTitle() + ",";
-            System.out.println(comic);
         }
 
-        comic += comics.get(comics.size()-1).getTitle(); //No leading "," yay
-        System.out.println(comic);
+        comic += comics.get(comics.size() - 1).getTitle(); //No leading "," yay
+
+        prop.put("login", login);
         prop.put("password", password);
         prop.put("comic", comic);
         prop.put("permLevel", "1");
         prop.put("name", name);
         prop.put("memberID", memberID);
-        
+
         File dir = new File(new File("").getAbsolutePath() + "\\users");
-        if(!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdir();
         }
 
@@ -207,29 +260,52 @@ public class RentalSystem {
 
         FileOutputStream out = new FileOutputStream(path, false);
         prop.store(out, "Member Data");
+        out.close();
     }
 
-    public void exportAdmin(String memberID, String name, String password) throws IOException {
+    public void exportAdmin(String memberID, String name, String password, String login) throws IOException {
         Properties prop = new Properties();
 
+        prop.put("login", login);
         prop.put("password", password);
         prop.put("permLevel", "2");
         prop.put("name", name);
         prop.put("memberID", memberID);
 
-        File dir = new File(new File("").getAbsolutePath() + "\\admins");
-        if(!dir.exists()){
+        File dir = new File(new File("").getAbsolutePath() + "\\users");
+        if (!dir.exists()) {
             dir.mkdir();
         }
-        
-        String path = new File("").getAbsolutePath() + "\\admins\\" + memberID + ".properties";
+
+        String path = new File("").getAbsolutePath() + "\\users\\" + memberID + ".properties";
 
         FileOutputStream out = new FileOutputStream(path, false);
         prop.store(out, "Admin Data");
+        out.close();
     }
 
-    public void importProperties() throws IOException,NoSuchAlgorithmException{
+    public void importComics() throws IOException {
+        List<String> results = new ArrayList<String>();
 
+        File[] files = new File(new File("").getAbsolutePath() + "\\comics\\").listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                results.add(file.getName());
+            }
+        }
+
+        for (String name : results) {
+
+            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\comics\\" + name);
+            Properties prop = new Properties();
+
+            prop.load(in);
+            in.close();
+            comicArr.add(new Comic(prop.getProperty("ISBN"), prop.getProperty("Title"), Integer.parseInt(prop.getProperty("PageNum")), Double.parseDouble(prop.getProperty("Cost"))));
+        }
+    }
+
+    public void importProperties() throws IOException, NoSuchAlgorithmException {
         List<String> results = new ArrayList<String>();
 
         File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
@@ -238,33 +314,37 @@ public class RentalSystem {
                 results.add(file.getName());
             }
         }
-        for (String name : results){
+        for (String name : results) {
 
             FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name);
             Properties prop = new Properties();
-            
+
             prop.load(in);
-            
-            if("2".equals(prop.getProperty("permLevel"))){
-                adminArr.add(new Administrator(prop.getProperty("memberID"),prop.getProperty("name"),prop.getProperty("password")));
-            }else{
+            in.close();
+            if ("2".equals(prop.getProperty("permLevel"))) {
+                adminArr.add(new Administrator(prop.getProperty("memberID"), prop.getProperty("name"), prop.getProperty("password"), prop.getProperty("login")));
+            } else {
                 ArrayList<Comic> comicList = new ArrayList<Comic>();
-                for (String comicName : prop.getProperty("comic").split(",")){
-                    for(Comic i : comicArr){
-                        if (comicName.equals(i.getTitle())){
+                for (String comicName : prop.getProperty("comic").split(",")) {
+                    boolean flag = false;
+                    for (Comic i : comicArr) {
+                        if (comicName.equals(i.getTitle())) {
                             comicList.add(i);
+                            flag = true;
                             break;
                         }
                     }
+                    if (flag == false) {
+                        System.out.println("Comic, " + comicName + " is either not added or missing in the system and will not be imported into account " + prop.getProperty("memberID"));
+                    }
                 }
-                renteeArr.add(new Rentee(prop.getProperty("memberID"),prop.getProperty("name"),comicList,prop.getProperty("password")));
+                renteeArr.add(new Rentee(prop.getProperty("memberID"), prop.getProperty("name"), comicList, prop.getProperty("password"), prop.getProperty("login")));
             }
         }
     }
-    
-    
 
     public String hash(String pw) throws NoSuchAlgorithmException {
+        //Sha256 hash cause storing passwords in plaintext is pain (for the company)
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         messageDigest.update(pw.getBytes());
         String stringHash = new String(messageDigest.digest()); //So that i dont get a byte[]
@@ -272,11 +352,11 @@ public class RentalSystem {
         return stringHash;
     }
 
-    public static void main(String[] args) throws IOException,NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         RentalSystem rental = new RentalSystem();
         rental.createComic();
+        rental.importComics();
         rental.importProperties();
-        System.out.println(rental.renteeArr.get(1).getMemberID());
 //        rental.export("123","test","1");
     }
 }
