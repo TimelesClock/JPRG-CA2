@@ -21,8 +21,9 @@ import java.util.Properties;
  */
 public class RentalSystem {
 
-    private ArrayList<Comic> comicArr;
-    private ArrayList<Users> userArr;
+    private ArrayList<Comic> comicArr = new ArrayList<Comic>();
+    private ArrayList<Rentee> renteeArr = new ArrayList<Rentee>();
+    private ArrayList<Administrator> adminArr = new ArrayList<Administrator>();
 
     public RentalSystem() {
     }
@@ -34,17 +35,29 @@ public class RentalSystem {
         comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
     }
 
-    public void createRentee() {
-        userArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1)))));
-        userArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2)))));
-        userArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3)))));
-
+    public void createRentee() throws IOException,NoSuchAlgorithmException{
+        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))),"123"));
+        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))),"123"));
+        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))),"123"));
+        for (int i = 0;i < renteeArr.size();i++){
+            Rentee temp = renteeArr.get(i);
+            exportRentee(temp.getMemberID(),temp.getName(),temp.getComics(),temp.getPassword());
+        }
+    }
+    
+    public void createAdmin() throws IOException,NoSuchAlgorithmException{
+        adminArr.add(new Administrator("A220620","root","root"));
+        for (int i = 0;i < adminArr.size();i++){
+            Administrator temp = adminArr.get(i);
+            exportAdmin(temp.getMemberID(),temp.getName(),temp.getPassword());
+        }
     }
 
     public void displayComic() {
         String text = String.format("%-15s| %-30s| %-7s| %-10s| %s\n%s\n", "ISBN-13", "Title", "Pages", "Price/Day", "Deposit", "-".repeat(80));
 
-        for (Comic i : this.comicArr) {
+        for (int index = 0;index < comicArr.size();index++) {
+            Comic i = comicArr.get(index);
             text += String.format("%-15s| %-30s| %-7d| %-10.2f| %.2f\n", i.getISBN(), i.getTitle(), i.getPageNum(), (i.getCost() / 20.0), (i.getCost() * 1.10));
         }
 
@@ -103,7 +116,7 @@ public class RentalSystem {
                 JOptionPane.QUESTION_MESSAGE);
         boolean flag = false;
         Rentee member = null;
-        for (Rentee renteeArr1 : userArr) {
+        for (Rentee renteeArr1 : renteeArr) {
             if ((renteeArr1).getMemberID().equals(userInput)) {
                 member = renteeArr1;
                 flag = true;
@@ -137,10 +150,10 @@ public class RentalSystem {
     }
 
     public void getEarning() {
-        int renteeNum = userArr.size();
+        int renteeNum = renteeArr.size();
         double total = 0.0;
 
-        for (Rentee i : userArr) {
+        for (Rentee i : renteeArr) {
             for (Comic o : i.getComics()) {
                 total += o.getCost() / 20.0;
             }
@@ -167,24 +180,32 @@ public class RentalSystem {
 
     }
 
-    public void exportRentee(String memberID, String name, ArrayList<Comic> comics, String password) throws IOException {
+    public void exportRentee(String memberID, String name, ArrayList<Comic> comics,String password) throws IOException {
         Properties prop = new Properties();
         String comic = "";
 
-        for (int i = 0; i < comics.size() - 1; i++) {
+        for (int i = 0; i <= (comics.size() - 2); i+= 1) {
+            
             comic += comics.get(i).getTitle() + ",";
+            System.out.println(comic);
         }
-        comic += comics.get(comics.size()).getTitle(); //No leading "," yay
 
+        comic += comics.get(comics.size()-1).getTitle(); //No leading "," yay
+        System.out.println(comic);
         prop.put("password", password);
         prop.put("comic", comic);
         prop.put("permLevel", "1");
         prop.put("name", name);
         prop.put("memberID", memberID);
+        
+        File dir = new File(new File("").getAbsolutePath() + "\\users");
+        if(!dir.exists()){
+            dir.mkdir();
+        }
 
         String path = new File("").getAbsolutePath() + "\\users\\" + memberID + ".properties";
 
-        FileOutputStream out = new FileOutputStream(path, true);
+        FileOutputStream out = new FileOutputStream(path, false);
         prop.store(out, "Member Data");
     }
 
@@ -196,13 +217,18 @@ public class RentalSystem {
         prop.put("name", name);
         prop.put("memberID", memberID);
 
-        String path = new File("").getAbsolutePath() + "\\users\\" + memberID + ".properties";
+        File dir = new File(new File("").getAbsolutePath() + "\\admins");
+        if(!dir.exists()){
+            dir.mkdir();
+        }
+        
+        String path = new File("").getAbsolutePath() + "\\admins\\" + memberID + ".properties";
 
-        FileOutputStream out = new FileOutputStream(path, true);
+        FileOutputStream out = new FileOutputStream(path, false);
         prop.store(out, "Admin Data");
     }
 
-    public void importProperties() throws IOException{
+    public void importProperties() throws IOException,NoSuchAlgorithmException{
 
         List<String> results = new ArrayList<String>();
 
@@ -212,19 +238,31 @@ public class RentalSystem {
                 results.add(file.getName());
             }
         }
-        
         for (String name : results){
-            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name +".properties");
-            
+
+            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name);
             Properties prop = new Properties();
             
             prop.load(in);
             
             if("2".equals(prop.getProperty("permLevel"))){
-                
+                adminArr.add(new Administrator(prop.getProperty("memberID"),prop.getProperty("name"),prop.getProperty("password")));
+            }else{
+                ArrayList<Comic> comicList = new ArrayList<Comic>();
+                for (String comicName : prop.getProperty("comic").split(",")){
+                    for(Comic i : comicArr){
+                        if (comicName.equals(i.getTitle())){
+                            comicList.add(i);
+                            break;
+                        }
+                    }
+                }
+                renteeArr.add(new Rentee(prop.getProperty("memberID"),prop.getProperty("name"),comicList,prop.getProperty("password")));
             }
         }
     }
+    
+    
 
     public String hash(String pw) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -234,9 +272,11 @@ public class RentalSystem {
         return stringHash;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException,NoSuchAlgorithmException {
         RentalSystem rental = new RentalSystem();
         rental.createComic();
+        rental.importProperties();
+        System.out.println(rental.renteeArr.get(1).getMemberID());
 //        rental.export("123","test","1");
     }
 }

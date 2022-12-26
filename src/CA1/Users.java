@@ -4,6 +4,9 @@
  */
 package CA1;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @author leong
@@ -12,11 +15,13 @@ public class Users {
     private String memberID;
     private String name;
     private String permissionLevel;
+    private String password;
     
-    public Users(String newMemberID, String newName,String newPermissionLevel){
+    public Users(String newMemberID, String newName,String newPermissionLevel,String unhashedPw) throws NoSuchAlgorithmException{
         this.memberID = newMemberID;
         this.name = newName;
         this.permissionLevel = newPermissionLevel;
+        this.password = hash(unhashedPw);
     }
     
     public String getMemberID() {
@@ -43,5 +48,16 @@ public class Users {
         this.permissionLevel = permissionLevel;
     }
     
+    public String getPassword(){
+        return password;
+    }
+    
+    public String hash(String pw) throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        messageDigest.update(pw.getBytes());
+        String stringHash = new String(messageDigest.digest()); //So that i dont get a byte[]
+        //Note to self, use equals when comparing hash to verify pw don tuse ==
+        return stringHash;
+    }
     
 }

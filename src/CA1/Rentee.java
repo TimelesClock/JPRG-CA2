@@ -4,7 +4,7 @@
  */
 package CA1;
 import java.util.ArrayList;
-
+import java.security.NoSuchAlgorithmException;
 /**
  *
  * @author leong
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class Rentee extends Users{
     private ArrayList<Comic> comics;
 
-    public Rentee(String memberID, String name, ArrayList<Comic> comics) {
-        super(memberID,name,"1");
+    public Rentee(String memberID, String name, ArrayList<Comic> comics,String pw) throws NoSuchAlgorithmException {
+        super(memberID,name,"1",pw);
         this.comics = comics;
     }
 

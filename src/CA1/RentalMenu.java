@@ -7,21 +7,22 @@ package CA1;
 import java.util.*;
 import javax.swing.*;
 import java.awt.Font;
-
+import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
 /**
  *
  * @author leong
  */
 public class RentalMenu {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException,NoSuchAlgorithmException{
 //        In a perfect world, sutff would be stored on a sql database
         
         
         String check[] = {"1", "2", "3", "4", "5"};
 
-        UIManager.put("OptionPane.messageFont", new Font("Monospaced", Font.BOLD, 15));
-        UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 15));
+        UIManager.put("OptionPane.messageFont", new Font("Monospaced", Font.BOLD, 12));
+        UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 12));
         RentalSystem rental = new RentalSystem();
         rental.createComic();
         rental.createRentee();
