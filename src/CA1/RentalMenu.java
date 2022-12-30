@@ -37,10 +37,10 @@ public class RentalMenu {
             UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 12));
             RentalSystem rental = new RentalSystem();
 
-            rental.updateCounter();
+            
             rental.importComics();
             rental.importProperties();
-
+            rental.updateCounter();
             //Keep these 3 lines of code if running for the first time else comment it out
 //            rental.createComic();
 //            rental.createRentee();
@@ -120,15 +120,7 @@ public class RentalMenu {
                 dict.put("3", () -> rental.findMember());
                 dict.put("4", () -> rental.getEarning());
 
-                String menu = """
-                      Enter your option:
-                      
-                      1. Display all Comics
-                      2. Search Comic by ISBN-13
-                      3. Search Rentee by MemberID
-                      4. Print Earning Statistic
-                      5. Exit
-                      """;
+                String menu = "Enter your option:\n\n1. Display all Comics\n2. Search Comic by ISBN-13\n3. Search Rentee by MemberID\n4. Print Earning Statistic\n5. Exit";
                 UserInput = (JOptionPane.showInputDialog(
                         null,
                         menu,
@@ -194,18 +186,7 @@ public class RentalMenu {
                 dict.put("7", () -> rental.getEarning());
             };
 
-            String menu = """
-                      Enter your option:
-                      
-                      1. Display all Comics
-                      2. Display all Users
-                      3. Search Comic by ISBN-13
-                      4. Search Rentee by MemberID
-                      5. Add/Remove Users
-                      6. Add/Remove Comics
-                      7. Print Earning Statistic      
-                      8. Exit
-                      """;
+            String menu = "Enter your option:\n\n1. Display all Comics\n2. Display all Users\n3. Search Comic by ISBN-13\n4. Search Rentee by MemberID\n5. Add/Remove Users\n6. Add/Remove Comics\n7. Print Earning Statistic\n8. Exit";
             UserInput = (JOptionPane.showInputDialog(
                     null,
                     menu,
@@ -274,13 +255,7 @@ public class RentalMenu {
         String in = "";
         if (permLevel == 3) {
             while (in != null && !in.equals("3")) {
-                menu = """
-                   Enter your option.
-                       
-                   1. Add new User
-                   2. Remove existing User
-                   3. Exit
-                   """;
+                menu = "Enter your option.\n\n1. Add new User\n2. Remove existing User\n3. Exit";
 
                 in = (JOptionPane.showInputDialog(
                         null,
@@ -466,15 +441,7 @@ public class RentalMenu {
         String in = "";
 
         while (!"5".equals(in) && in != null) {
-            menu = """
-                   Enter your option.
-                       
-                   1. Add new Comic
-                   2. Remove existing Comic
-                   3. Add comic to Rentee
-                   4. Remove comic from Rentee
-                   5. Exit
-                   """;
+            menu = "Enter your option.\n\n1. Add new Comic\n2. Remove existing Comic\n3. Add comic to Rentee\n4. Remove comic from Rentee\n5. Exit";
             in = (JOptionPane.showInputDialog(
                     null,
                     menu,

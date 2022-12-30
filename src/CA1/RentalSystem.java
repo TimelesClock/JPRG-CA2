@@ -209,13 +209,7 @@ public class RentalSystem {
         }
         if (flag != null) {
             double price = flag.getCost();
-            String text = String.format("""
-                                        %s
-                                        
-                                        Stock purchased at $%.2f.
-                                        Cost $%.2f per day to rent.
-                                        Require deposit of $%.2f.
-                          """, flag.getTitle(), price, price / 20, price * 1.1);
+            String text = String.format("%s\n\nStock purchased at $%.2f.\nCost $%.2f per day to rent.\nRequire deposit of $%.2f.", flag.getTitle(), price, price / 20, price * 1.1);
             JOptionPane.showMessageDialog(
                     null,
                     text,
@@ -315,15 +309,7 @@ public class RentalSystem {
 
         double average = total / renteeNum;
 
-        String out = String.format("""
-                     Earning Per Day:
-                     ---------------
-                     There are %d Rentees in total.
-                     
-                     Average earning day based on numbers of rentees is $%.2f.
-                     
-                     Total earning per day is $%.2f.
-                     """, renteeNum, average, total);
+        String out = String.format("Earning Per Day:\n---------------\nThere are %d Rentees in total.\n\nAverage earning day based on numbers of rentees is $%.2f.\n\nTotal earning per day is $%.2f.", renteeNum, average, total);
 
         JOptionPane.showMessageDialog(
                 null,
