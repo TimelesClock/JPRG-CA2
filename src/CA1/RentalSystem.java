@@ -41,6 +41,115 @@ public class RentalSystem {
         return adminArr;
     }
 
+    public void addComicToRentee(String ID, String ISBN) throws IOException, NoSuchAlgorithmException {
+        int index = -1;
+        int index2 = -1;
+        for (int i = 0; i < renteeArr.size(); i++) {
+            if (renteeArr.get(i).getMemberID().equals(ID)) {
+                index = i;
+                break;
+
+            }
+        }
+        if (index != -1) {
+            List<String> comic = new ArrayList<String>();
+
+            for (int k = 0; k < renteeArr.get(index).getComics().size(); k++) {
+                comic.add(renteeArr.get(index).getComics().get(k).getISBN());
+            }
+
+            if (comic.contains(ISBN)) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The rentee already has this comic!",
+                        "Input",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                for (int o = 0; o < comicArr.size(); o++) {
+                    if (comicArr.get(o).getISBN().equals(ISBN)) {
+                        index2 = o;
+                    }
+                }
+
+                if (index2 != -1) {
+                    Rentee rent = renteeArr.get(index);
+                    ArrayList<Comic> temp = rent.getComics();
+                    temp.add(comicArr.get(index2));
+                    renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
+                    exportRentee(renteeArr.get(index));
+                    JOptionPane.showMessageDialog(
+                    null,
+                    "Comic has been successfully added to the Rentee",
+                    "Input",
+                    JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "The member ID entered could not be found!",
+                    "Input",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    
+    public void rmvComicFromRentee(String ID, String ISBN) throws IOException, NoSuchAlgorithmException {
+        int index = -1;
+        int index2 = -1;
+        for (int i = 0; i < renteeArr.size(); i++) {
+            if (renteeArr.get(i).getMemberID().equals(ID)) {
+                index = i;
+                break;
+
+            }
+        }
+        if (index != -1) {
+            List<String> comic = new ArrayList<String>();
+
+            for (int k = 0; k < renteeArr.get(index).getComics().size(); k++) {
+                comic.add(renteeArr.get(index).getComics().get(k).getISBN());
+            }
+
+            if (!comic.contains(ISBN)) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The rentee does not have this comic!",
+                        "Input",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                for (int o = 0; o < comicArr.size(); o++) {
+                    if (comicArr.get(o).getISBN().equals(ISBN)) {
+                        index2 = o;
+                    }
+                }
+
+                if (index2 != -1) {
+                    Rentee rent = renteeArr.get(index);
+                    ArrayList<Comic> temp = rent.getComics();
+                    temp.remove(temp.indexOf(comicArr.get(index2)));
+                    renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
+                    exportRentee(renteeArr.get(index));
+                    JOptionPane.showMessageDialog(
+                    null,
+                    "Comic has been successfully removed from the Rentee",
+                    "Input",
+                    JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "The member ID entered could not be found!",
+                    "Input",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    
     public void createComic() throws IOException {
         comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
         comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
@@ -175,7 +284,9 @@ public class RentalSystem {
             }
         }
         for (String name : results) {
-
+            if (name.equals("counter.properties")) {
+                continue;
+            }
             FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name);
             Properties prop = new Properties();
 
@@ -300,6 +411,9 @@ public class RentalSystem {
     }
 
     public void importComics() throws IOException, NoSuchAlgorithmException {
+        //Reset existing comicArr
+        comicArr = new ArrayList<Comic>();
+
         File dir = new File(new File("").getAbsolutePath() + "\\comics");
         if (!dir.exists()) {
             dir.mkdir();
@@ -326,6 +440,10 @@ public class RentalSystem {
     }
 
     public void importProperties() throws IOException, NoSuchAlgorithmException {
+        //Reset existing admin arr and rentee arr
+        adminArr = new ArrayList<Administrator>();
+        renteeArr = new ArrayList<Rentee>();
+
         File dir = new File(new File("").getAbsolutePath() + "\\users");
         if (!dir.exists()) {
             dir.mkdir();
@@ -375,12 +493,13 @@ public class RentalSystem {
             }
 
             if ("2".equals(prop.getProperty("permLevel"))) {
+
                 adminArr.add(new Administrator(prop.getProperty("memberID"), prop.getProperty("name"), prop.getProperty("password"), prop.getProperty("login")));
             } else if (Integer.parseInt(prop.getProperty("permLevel")) < 2) {;
                 ArrayList<Comic> comicList = new ArrayList<Comic>();
 
                 for (String comicName : prop.getProperty("comic").split(",")) {
-                    if ("".equals(comicName)){
+                    if ("".equals(comicName)) {
                         continue;
                     }
                     boolean flag = false;
@@ -414,6 +533,12 @@ public class RentalSystem {
         updateCounter();
     }
 
+    public void addToComic(String title, String ISBN, String pageNum, String cost) throws IOException {
+        Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost));
+        comicArr.add(comic);
+        exportComic(comic);
+    }
+
     public String hash(String pw) throws NoSuchAlgorithmException {
         //Sha256 hash cause storing passwords in plaintext is pain (for the company)
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -436,12 +561,11 @@ public class RentalSystem {
         }
     }
 
-    public static void updateCounter() throws IOException{
+    public static void updateCounter() throws IOException {
         File counter = new File(new File("").getAbsolutePath() + "\\users\\counter.properties");
         Properties counterProp = new Properties();
         FileOutputStream createCounter = new FileOutputStream(counter, false);
 
-        List<String> memberID = new ArrayList<String>();
         int admin = 0;
         int member = 0;
         int num;
