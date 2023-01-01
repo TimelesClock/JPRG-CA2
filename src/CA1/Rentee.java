@@ -6,7 +6,9 @@ package CA1;
 import java.util.ArrayList;
 import java.security.NoSuchAlgorithmException;
 /**
- *
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
  * @author leong
  */
 public class Rentee extends Users{

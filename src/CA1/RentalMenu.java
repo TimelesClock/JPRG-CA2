@@ -18,6 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
  *
  * @author leong
  */
@@ -37,7 +40,6 @@ public class RentalMenu {
             UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 12));
             RentalSystem rental = new RentalSystem();
 
-            
             rental.importComics();
             rental.importProperties();
             rental.updateCounter();
@@ -182,7 +184,7 @@ public class RentalMenu {
                         System.out.println(e);
                     }
                 });
-                
+
                 dict.put("7", () -> rental.getEarning());
             };
 
