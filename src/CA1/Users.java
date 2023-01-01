@@ -20,11 +20,11 @@ public class Users {
     private String password;
     private String lastLogin;
     
-    public Users(String newMemberID, String newName,String newPermissionLevel,String unhashedPw,String login) throws NoSuchAlgorithmException{
+    public Users(String newMemberID, String newName,String newPermissionLevel,String pw,String login) throws NoSuchAlgorithmException{
         this.memberID = newMemberID;
         this.name = newName;
         this.permissionLevel = newPermissionLevel;
-        this.password = hash(unhashedPw);
+        this.password = pw;
         this.lastLogin = login;
     }
     

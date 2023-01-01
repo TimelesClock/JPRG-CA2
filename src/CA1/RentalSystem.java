@@ -153,31 +153,23 @@ public class RentalSystem {
     }
     
     public void createComic() throws IOException {
-        comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
-        comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
-        comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
-        comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
-        for (int i = 0; i < comicArr.size(); i++) {
-            exportComic(comicArr.get(i));
-        }
+        exportComic(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
+        exportComic(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
+        exportComic(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
+        exportComic(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
+
     }
 
     public void createRentee() throws IOException, NoSuchAlgorithmException {
-        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), "123", "2022.12.26 23:34:47"));
-        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), "123", "2022.12.26 23:34:47"));
-        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), "123", "2022.12.26 23:34:47"));
-        for (int i = 0; i < renteeArr.size(); i++) {
-            Rentee temp = renteeArr.get(i);
-            exportRentee(temp);
-        }
+        exportRentee(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), hash("123"), "2022.12.26 23:34:47"));
+        exportRentee(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), hash("123"), "2022.12.26 23:34:47"));
+        exportRentee(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), hash("123"), "2022.12.26 23:34:47"));
+
     }
 
     public void createAdmin() throws IOException, NoSuchAlgorithmException {
-        adminArr.add(new Administrator("A110620", "root", "root", "2022.12.26 23:34:47"));
-        for (int i = 0; i < adminArr.size(); i++) {
-            Administrator temp = adminArr.get(i);
-            exportAdmin(temp);
-        }
+        exportAdmin(new Administrator("A110620", "root", "root", "2022.12.26 23:34:47"));
+
     }
 
     public void displayComic() {
@@ -404,7 +396,9 @@ public class RentalSystem {
 
         File dir = new File(new File("").getAbsolutePath() + "\\comics");
         if (!dir.exists()) {
-            dir.mkdir();
+            
+            dir.mkdir();//Make folder
+            createComic(); //Generate comics
         }
 
         List<String> results = new ArrayList<String>();
@@ -434,7 +428,11 @@ public class RentalSystem {
 
         File dir = new File(new File("").getAbsolutePath() + "\\users");
         if (!dir.exists()) {
+            
             dir.mkdir();
+            createAdmin();//Generate admins
+            createRentee();//generate rentees
+
         }
 
         File rootacc = new File(new File("").getAbsolutePath() + "\\users\\root.properties");

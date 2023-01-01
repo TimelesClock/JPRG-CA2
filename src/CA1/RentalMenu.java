@@ -18,9 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class: DIT/FT/1B/02 
- * Name: Leong Yu Zhi Andy 
- * Admission Number: P2205865
+ * Class: DIT/FT/1B/02 Name: Leong Yu Zhi Andy Admission Number: P2205865
  *
  * @author leong
  */
@@ -152,8 +150,10 @@ public class RentalMenu {
                         "Thank you for using Comic Rental.\nWe look forward to serve you in the near future.",
                         "Input",
                         JOptionPane.INFORMATION_MESSAGE);
+                export(rental);
                 login = false;
-            } else {
+
+            } else if (permLevel >= 2) {
 
                 dict.put("1", () -> rental.displayComic());
                 dict.put("2", () -> {
@@ -186,41 +186,40 @@ public class RentalMenu {
                 });
 
                 dict.put("7", () -> rental.getEarning());
-            };
-
-            String menu = "Enter your option:\n\n1. Display all Comics\n2. Display all Users\n3. Search Comic by ISBN-13\n4. Search Rentee by MemberID\n5. Add/Remove Users\n6. Add/Remove Comics\n7. Print Earning Statistic\n8. Exit";
-            UserInput = (JOptionPane.showInputDialog(
-                    null,
-                    menu,
-                    "Input",
-                    JOptionPane.QUESTION_MESSAGE));
-
-            while (!("8".equals(UserInput) && !(UserInput == null))) {
-                if (Arrays.asList(checkAdmin).contains(UserInput)) {
-                    dict.get(UserInput).run();
-                } else if (UserInput == null) {
-                    break;
-                } else {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Invalid option! Please enter in the range from 1 to 9.",
-                            "Input",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+                String menu = "Enter your option:\n\n1. Display all Comics\n2. Display all Users\n3. Search Comic by ISBN-13\n4. Search Rentee by MemberID\n5. Add/Remove Users\n6. Add/Remove Comics\n7. Print Earning Statistic\n8. Exit";
                 UserInput = (JOptionPane.showInputDialog(
                         null,
                         menu,
                         "Input",
                         JOptionPane.QUESTION_MESSAGE));
-            }
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Thank you for using Comic Rental.\nWe look forward to serve you in the near future.",
-                    "Input",
-                    JOptionPane.INFORMATION_MESSAGE);
-            export(rental);
 
-            login = false;
+                while (!("8".equals(UserInput) && !(UserInput == null))) {
+                    if (Arrays.asList(checkAdmin).contains(UserInput)) {
+                        dict.get(UserInput).run();
+                    } else if (UserInput == null) {
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Invalid option! Please enter in the range from 1 to 9.",
+                                "Input",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    UserInput = (JOptionPane.showInputDialog(
+                            null,
+                            menu,
+                            "Input",
+                            JOptionPane.QUESTION_MESSAGE));
+                }
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Thank you for using Comic Rental.\nWe look forward to serve you in the near future.",
+                        "Input",
+                        JOptionPane.INFORMATION_MESSAGE);
+                export(rental);
+
+                login = false;
+            };
 
         } while (!login);
     }
@@ -235,8 +234,11 @@ public class RentalMenu {
             }
         });
         ArrayList<Rentee> rentee = rental.getRenteeArr();
+
         rentee.forEach((i) -> {
+            
             try {
+
                 rental.exportRentee(i);
             } catch (IOException e) {
                 System.out.println(e);
