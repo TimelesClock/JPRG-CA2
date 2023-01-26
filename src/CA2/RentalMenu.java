@@ -26,7 +26,7 @@ public class RentalMenu {
 
     private static boolean login = false;
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
         String memberIn = "";
         do {
 
@@ -38,22 +38,15 @@ public class RentalMenu {
             UIManager.put("OptionPane.buttonFont", new Font("Monospaced", Font.BOLD, 12));
             RentalSystem rental = new RentalSystem();
 
-            rental.importComics();
             rental.importProperties();
-            rental.updateCounter();
+
             //Keep these 3 lines of code if running for the first time else comment it out
 //            rental.createComic();
 //            rental.createRentee();
 //            rental.createAdmin();
             //----------------------------------------------------------------------------- Login stuff
             List<String> memberID = new ArrayList<String>();
-            String filepath = new File("").getAbsolutePath() + "\\users\\";
-            File[] files = new File(filepath).listFiles();
-            for (File file : files) {
-                if (file.isFile() && (!("counter.properties").equals(file.getName()) || !("root.properties").equals(file.getName()))) {
-                    memberID.add(file.getName().replaceFirst("[.][^.]+$", ""));
-                }
-            }
+            
 
             while (!login) {
                 memberIn = JOptionPane.showInputDialog(
@@ -226,21 +219,11 @@ public class RentalMenu {
 
     private static void export(RentalSystem rental) throws IOException,NoSuchAlgorithmException {
 
-        ArrayList<Rentee> rentee = rental.getRenteeArr();
-        ArrayList<Administrator> admin = rental.getAdminArr();
-        rental.export(rentee,admin);
+        rental.export();
 
-        ArrayList<Comic> comic = rental.getComicArr();
-        comic.forEach((i) -> {
-            try {
-                rental.exportComic(i);
-            } catch (IOException e) {
-                System.out.println(e);
-            }
-        });
     }
 
-    public static void addUser(int permLevel, RentalSystem rental, String memberIn) throws NoSuchAlgorithmException, IOException {
+    public static void addUser(int permLevel, RentalSystem rental, String memberIn) throws NoSuchAlgorithmException, IOException,ClassNotFoundException {
         String menu;
         String in = "";
         if (permLevel == 3) {
@@ -329,7 +312,7 @@ public class RentalMenu {
                     } else {
                         memberID = "A" + (Integer.parseInt(prop.getProperty("admin")) + 1) + "";
 
-                        rental.addToAdmin(memberID, name, password, "null");
+                        rental.addToAdmin(memberID, name,perm, password, "null");
 
                     }
 
@@ -426,7 +409,7 @@ public class RentalMenu {
         }
     }
 
-    public static void addComic(RentalSystem rental) throws IOException, NoSuchAlgorithmException {
+    public static void addComic(RentalSystem rental) throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
         String menu = "";
         String in = "";
 
@@ -538,7 +521,7 @@ public class RentalMenu {
                             "Comic Successfully deleted!",
                             "Input",
                             JOptionPane.INFORMATION_MESSAGE);
-                    rental.importComics();
+                    rental.importProperties();
                 } else {
                     JOptionPane.showMessageDialog(
                             null,

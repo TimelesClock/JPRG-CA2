@@ -5,13 +5,14 @@
 package CA2;
 import java.util.ArrayList;
 import java.security.NoSuchAlgorithmException;
+import java.io.Serializable;
 /**
  * Class: DIT/FT/1B/02 
  * Name: Leong Yu Zhi Andy 
  * Admission Number: P2205865
  * @author leong
  */
-public class Rentee extends Users{
+public class Rentee extends Users implements Serializable{
     private ArrayList<Comic> comics;
 
     public Rentee(String memberID, String name, ArrayList<Comic> comics,String pw,String login) throws NoSuchAlgorithmException {

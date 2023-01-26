@@ -81,7 +81,7 @@ public class RentalSystem {
                     ArrayList<Comic> temp = rent.getComics();
                     temp.add(comicArr.get(index2));
                     renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
-                    export(renteeArr, adminArr);
+                    export();
                     JOptionPane.showMessageDialog(
                             null,
                             "Comic has been successfully added to the Rentee",
@@ -135,7 +135,7 @@ public class RentalSystem {
                     ArrayList<Comic> temp = rent.getComics();
                     temp.remove(temp.indexOf(comicArr.get(index2)));
                     renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
-                    export(renteeArr, adminArr);
+                    export();
                     JOptionPane.showMessageDialog(
                             null,
                             "Comic has been successfully removed from the Rentee",
@@ -154,11 +154,11 @@ public class RentalSystem {
 
     }
 
-    public void createComic() throws IOException {
-        exportComic(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
-        exportComic(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
-        exportComic(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
-        exportComic(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
+    public void createComic() throws IOException,NoSuchAlgorithmException {
+        comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
+        comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
+        comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
+        comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
 
     }
 
@@ -166,12 +166,14 @@ public class RentalSystem {
         renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), hash("123"), "2022.12.26 23:34:47"));
         renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), hash("123"), "2022.12.26 23:34:47"));
         renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), hash("123"), "2022.12.26 23:34:47"));
-        export(renteeArr, adminArr);
+
 
     }
 
     public void createAdmin() throws IOException, NoSuchAlgorithmException {
-        export(renteeArr, adminArr);
+        adminArr.add(new Administrator("A110620", "rootLow","2", hash("root"), "2022.12.26 23:34:47"));
+        adminArr.add(new Administrator("root","root","3",hash("root"),"2022.12.26 23:34:47"));
+
 
     }
 
@@ -317,28 +319,13 @@ public class RentalSystem {
 
     }
 
-    public void exportComic(Comic comic) throws IOException {
-        Properties prop = new Properties();
 
-        prop.put("ISBN", comic.getISBN());
-        prop.put("Title", comic.getTitle() + "");
-        prop.put("PageNum", comic.getPageNum() + "");
-        prop.put("Cost", comic.getCost() + "");
 
-        File dir = new File(new File("").getAbsolutePath() + "\\comics");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
-        String path = new File("").getAbsolutePath() + "\\comics\\" + comic.getISBN() + ".properties";
-
-        FileOutputStream out = new FileOutputStream(path, false);
-        prop.store(out, "Comic Data");
-        out.close();
-    }
-
-    public void export(ArrayList<Rentee> renteeArr, ArrayList<Administrator> adminArr) throws IOException, NoSuchAlgorithmException {
-        String data = "root~" + hash("root") + "~root~" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + "~3\n";
+    public void export() throws IOException, NoSuchAlgorithmException {
+        IO.serialize(comicArr,"Comic.dat");
+        IO.serialize(renteeArr, "Rentee.dat");
+        IO.serialize(adminArr,"Admin.dat");
+        String data = "root;" + hash("root") + ";root;" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + ";3\n";
         for (Rentee rentee : renteeArr) {
             ArrayList<Comic> comics = rentee.getComics();
 
@@ -346,20 +333,20 @@ public class RentalSystem {
             if (!comics.isEmpty()) {
                 for (int i = 0; i <= (comics.size() - 2); i += 1) {
 
-                    comic += comics.get(i).getTitle() + ",";
+                    comic += comics.get(i).getISBN() + "#";
                 }
-                comic += comics.get(comics.size() - 1).getTitle(); //No leading "," yay
+                comic += comics.get(comics.size() - 1).getISBN(); //No leading "#"
             }
 
-            data += rentee.getMemberID() + "~" + rentee.getPassword() + "~" + rentee.getName() + "~" + rentee.getLogin() + "~1" + "~" + comic + "\n";
+            data += rentee.getMemberID() + ";" + rentee.getPassword() + ";" + rentee.getName() + ";" + rentee.getLogin() + "~1" + ";" + comic + "\n";
         }
 
         for (Administrator admin : adminArr) {
-            data += admin.getMemberID() + "~" + admin.getPassword() + "~" + admin.getName() + "~" + admin.getLogin() + "~" + admin.getPermissionLevel() + "\n";
+            data += admin.getMemberID() + ";" + admin.getPassword() + ";" + admin.getName() + ";" + admin.getLogin() + ";" + admin.getPermissionLevel() + "\n";
         }
 
         try {
-            FileWriter filewriter = new FileWriter("test.txt");
+            FileWriter filewriter = new FileWriter("users.txt");
             filewriter.write(data);
             filewriter.flush();
             filewriter.close();
@@ -369,92 +356,32 @@ public class RentalSystem {
 
     }
 
-    public void importComics() throws IOException, NoSuchAlgorithmException {
-        //Reset existing comicArr
-        comicArr = new ArrayList<Comic>();
 
-        File dir = new File(new File("").getAbsolutePath() + "\\comics");
-        if (!dir.exists()) {
-
-            dir.mkdir();//Make folder
-            createComic(); //Generate comics
-        }
-
-        List<String> results = new ArrayList<String>();
-
-        File[] files = new File(new File("").getAbsolutePath() + "\\comics\\").listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                results.add(file.getName());
-            }
-        }
-
-        for (String name : results) {
-
-            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\comics\\" + name);
-            Properties prop = new Properties();
-
-            prop.load(in);
-            in.close();
-            comicArr.add(new Comic(prop.getProperty("ISBN"), prop.getProperty("Title"), Integer.parseInt(prop.getProperty("PageNum")), Double.parseDouble(prop.getProperty("Cost"))));
-        }
-    }
-
-    public void importProperties() throws IOException, NoSuchAlgorithmException {
-        //Reset existing admin arr and rentee arr
-        adminArr = new ArrayList<Administrator>();
-        renteeArr = new ArrayList<Rentee>();
-        Path filePath = Paths.get("test.txt");
-        String data = Files.readString(filePath);
-        String[] accounts = data.split("\n");
-
-        for (String acc : accounts) {
-            String[] accData = acc.split("~");
-            if (accData[4].equals("1")) {
-                ArrayList<Comic> comicList = new ArrayList<Comic>();
-
-                for (String comicName : accData[5].split(",")) {
-                    if ("".equals(comicName)) {
-                        continue;
-                    }
-                    boolean flag = false;
-                    for (Comic i : comicArr) {
-                        if (comicName.equals(i.getTitle())) {
-                            comicList.add(i);
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (flag == false) {
-                        System.out.println("Comic, " + comicName + " is either not added or missing in the system and will not be imported into account " + accData[0]);
-                    }
-
-                }
-                renteeArr.add(new Rentee(accData[0], accData[2], comicList, accData[1], accData[3]));
-            }else if (accData[4].equals("2")){
-                adminArr.add(new Administrator(accData[0], accData[2], accData[1], accData[3]));
-            }
-        }
+    public void importProperties() throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
+        comicArr = (ArrayList<Comic>) IO.deserialize("Comic.dat");
+        renteeArr = (ArrayList<Rentee>) IO.deserialize("Rentee.dat");
+        adminArr = (ArrayList<Administrator>) IO.deserialize("Admin.dat");
+        
     }
 
     public void addToRentee(String memberID, String name, ArrayList<Comic> comic, String password, String login) throws IOException, NoSuchAlgorithmException {
         Rentee newRentee = new Rentee(memberID, name, comic, password, login);
         renteeArr.add(newRentee);
-        export(renteeArr, adminArr);
-        updateCounter();
+        export();
+
     }
 
-    public void addToAdmin(String memberID, String name, String password, String login) throws IOException, NoSuchAlgorithmException {
-        Administrator newAdmin = new Administrator(memberID, name, password, login);
+    public void addToAdmin(String memberID, String name,String perm, String password, String login) throws IOException, NoSuchAlgorithmException {
+        Administrator newAdmin = new Administrator(memberID, name,perm, password, login);
         adminArr.add(newAdmin);
-        export(renteeArr, adminArr);
-        updateCounter();
+        export();
+
     }
 
-    public void addToComic(String title, String ISBN, String pageNum, String cost) throws IOException {
+    public void addToComic(String title, String ISBN, String pageNum, String cost) throws IOException,NoSuchAlgorithmException {
         Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost));
         comicArr.add(comic);
-        exportComic(comic);
+        export();
     }
 
     public String hash(String pw) throws NoSuchAlgorithmException {
@@ -479,47 +406,50 @@ public class RentalSystem {
         }
     }
 
-    public static void updateCounter() throws IOException {
-        File counter = new File(new File("").getAbsolutePath() + "\\users\\counter.properties");
-        Properties counterProp = new Properties();
-        FileOutputStream createCounter = new FileOutputStream(counter, false);
+//    public static void updateCounter() throws IOException {
+//        File counter = new File(new File("").getAbsolutePath() + "\\users\\counter.properties");
+//        Properties counterProp = new Properties();
+//        FileOutputStream createCounter = new FileOutputStream(counter, false);
+//
+//        int admin = 0;
+//        int member = 0;
+//        int num;
+//        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                if (isNum(file.getName().replaceFirst("[.][^.]+$", "").substring(1))) {
+//                    num = Integer.parseInt(file.getName().replaceFirst("[.][^.]+$", "").substring(1));
+//                    if ("A".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > admin) {
+//                        admin = num;
+//                    } else if ("M".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > member) {
+//                        member = num;
+//                    }
+//                }
+//            }
+//        }
+//
+//        //If there are no admin/member files then admin counter = 110620,member counter = 220622
+//        if (admin == 0) {
+//            admin = 110620;
+//        }
+//        if (member == 0) {
+//            member = 220622;
+//        }
+//
+//        counterProp.put("admin", admin + "");
+//        counterProp.put("member", member + "");
+//
+//        counterProp.store(createCounter, "ID counter");
+//        createCounter.close();
+//    }
 
-        int admin = 0;
-        int member = 0;
-        int num;
-        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                if (isNum(file.getName().replaceFirst("[.][^.]+$", "").substring(1))) {
-                    num = Integer.parseInt(file.getName().replaceFirst("[.][^.]+$", "").substring(1));
-                    if ("A".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > admin) {
-                        admin = num;
-                    } else if ("M".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > member) {
-                        member = num;
-                    }
-                }
-            }
-        }
-
-        //If there are no admin/member files then admin counter = 110620,member counter = 220622
-        if (admin == 0) {
-            admin = 110620;
-        }
-        if (member == 0) {
-            member = 220622;
-        }
-
-        counterProp.put("admin", admin + "");
-        counterProp.put("member", member + "");
-
-        counterProp.store(createCounter, "ID counter");
-        createCounter.close();
-    }
-
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
         RentalSystem rental = new RentalSystem();
-//        rental.createComic();
-//        rental.importComics();
+        rental.createComic();
+        rental.createRentee();
+        rental.createAdmin();
+//        rental.importProperties();
+        rental.export();
         rental.importProperties();
 //        rental.export("123","test","1");
 

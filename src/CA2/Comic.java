@@ -4,13 +4,14 @@
  */
 
 package CA2;
+import java.io.Serializable;
 /**
  * Class: DIT/FT/1B/02 
  * Name: Leong Yu Zhi Andy 
  * Admission Number: P2205865
  * @author leong
  */
-public class Comic {
+public class Comic implements Serializable{
 
     private String ISBN;
     private String title;

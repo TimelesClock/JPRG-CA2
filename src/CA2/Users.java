@@ -6,6 +6,7 @@ package CA2;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.io.Serializable;
 
 /**
  * Class: DIT/FT/1B/02 
@@ -13,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
  * Admission Number: P2205865
  * @author leong
  */
-public class Users {
+public class Users implements Serializable{
     private String memberID;
     private String name;
     private String permissionLevel;
