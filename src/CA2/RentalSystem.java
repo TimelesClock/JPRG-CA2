@@ -12,13 +12,13 @@ import java.security.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+//import java.io.FileOutputStream;
 import java.util.Properties;
-import java.text.SimpleDateFormat;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.FileWriter;
+//import java.text.SimpleDateFormat;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.io.FileWriter;
 
 /**
  * Class: DIT/FT/1B/02 Name: Leong Yu Zhi Andy Admission Number: P2205865
@@ -81,7 +81,7 @@ public class RentalSystem {
                     ArrayList<Comic> temp = rent.getComics();
                     temp.add(comicArr.get(index2));
                     renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
-                    export();
+                    IO.export(comicArr,renteeArr,adminArr);
                     JOptionPane.showMessageDialog(
                             null,
                             "Comic has been successfully added to the Rentee",
@@ -135,7 +135,7 @@ public class RentalSystem {
                     ArrayList<Comic> temp = rent.getComics();
                     temp.remove(temp.indexOf(comicArr.get(index2)));
                     renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
-                    export();
+                    IO.export(comicArr,renteeArr,adminArr);
                     JOptionPane.showMessageDialog(
                             null,
                             "Comic has been successfully removed from the Rentee",
@@ -155,11 +155,11 @@ public class RentalSystem {
     }
 
     public void createComic() throws IOException,NoSuchAlgorithmException {
-        comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39));
-        comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99));
-        comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99));
-        comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99));
-
+        comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39,"Comic","EN"));
+        comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99,"Comic","EN"));
+        comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99,"Comic","EN"));
+        comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99,"Comic","EN"));
+        comicArr.add(new Comic("978-4091400017", "Doremon", 191, 12.88,"Manga","JP"));
     }
 
     public void createRentee() throws IOException, NoSuchAlgorithmException {
@@ -321,67 +321,26 @@ public class RentalSystem {
 
 
 
-    public void export() throws IOException, NoSuchAlgorithmException {
-        IO.serialize(comicArr,"Comic.dat");
-        IO.serialize(renteeArr, "Rentee.dat");
-        IO.serialize(adminArr,"Admin.dat");
-        String data = "root;" + hash("root") + ";root;" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + ";3\n";
-        for (Rentee rentee : renteeArr) {
-            ArrayList<Comic> comics = rentee.getComics();
-
-            String comic = "";
-            if (!comics.isEmpty()) {
-                for (int i = 0; i <= (comics.size() - 2); i += 1) {
-
-                    comic += comics.get(i).getISBN() + "#";
-                }
-                comic += comics.get(comics.size() - 1).getISBN(); //No leading "#"
-            }
-
-            data += rentee.getMemberID() + ";" + rentee.getPassword() + ";" + rentee.getName() + ";" + rentee.getLogin() + "~1" + ";" + comic + "\n";
-        }
-
-        for (Administrator admin : adminArr) {
-            data += admin.getMemberID() + ";" + admin.getPassword() + ";" + admin.getName() + ";" + admin.getLogin() + ";" + admin.getPermissionLevel() + "\n";
-        }
-
-        try {
-            FileWriter filewriter = new FileWriter("users.txt");
-            filewriter.write(data);
-            filewriter.flush();
-            filewriter.close();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
-    }
-
-
-    public void importProperties() throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
-        comicArr = (ArrayList<Comic>) IO.deserialize("Comic.dat");
-        renteeArr = (ArrayList<Rentee>) IO.deserialize("Rentee.dat");
-        adminArr = (ArrayList<Administrator>) IO.deserialize("Admin.dat");
-        
-    }
+    
 
     public void addToRentee(String memberID, String name, ArrayList<Comic> comic, String password, String login) throws IOException, NoSuchAlgorithmException {
         Rentee newRentee = new Rentee(memberID, name, comic, password, login);
         renteeArr.add(newRentee);
-        export();
+        IO.export(comicArr,renteeArr,adminArr);
 
     }
 
     public void addToAdmin(String memberID, String name,String perm, String password, String login) throws IOException, NoSuchAlgorithmException {
         Administrator newAdmin = new Administrator(memberID, name,perm, password, login);
         adminArr.add(newAdmin);
-        export();
+        IO.export(comicArr,renteeArr,adminArr);
 
     }
 
-    public void addToComic(String title, String ISBN, String pageNum, String cost) throws IOException,NoSuchAlgorithmException {
-        Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost));
+    public void addToComic(String title, String ISBN, String pageNum, String cost,String type,String language) throws IOException,NoSuchAlgorithmException {
+        Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost),type,language);
         comicArr.add(comic);
-        export();
+        IO.export(comicArr,renteeArr,adminArr);
     }
 
     public String hash(String pw) throws NoSuchAlgorithmException {
@@ -443,14 +402,30 @@ public class RentalSystem {
 //        createCounter.close();
 //    }
 
+    public void importComics() throws IOException,NoSuchAlgorithmException,ClassNotFoundException{
+        this.comicArr = IO.importComics();
+    }
+
+    public void importRentee() throws IOException,NoSuchAlgorithmException,ClassNotFoundException{
+        this.renteeArr = IO.importRentee(comicArr);
+    }
+
+    public void importAdmin() throws IOException,NoSuchAlgorithmException,ClassNotFoundException{
+        this.adminArr = IO.importAdmin();
+    }
+    
+    
+
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException,ClassNotFoundException {
         RentalSystem rental = new RentalSystem();
         rental.createComic();
         rental.createRentee();
         rental.createAdmin();
 //        rental.importProperties();
-        rental.export();
-        rental.importProperties();
+        IO.export(rental.getComicArr(),rental.getRenteeArr(),rental.getAdminArr());
+        rental.importComics();
+        rental.importRentee();
+        rental.importAdmin();
 //        rental.export("123","test","1");
 
     }
