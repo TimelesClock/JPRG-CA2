@@ -28,6 +28,7 @@ import java.util.Properties;
 public class RentalSystem {
 
     private ArrayList<Comic> comicArr = new ArrayList<Comic>();
+    private ArrayList<Manga> mangaArr = new ArrayList<Manga>();
     private ArrayList<Rentee> renteeArr = new ArrayList<Rentee>();
     private ArrayList<Administrator> adminArr = new ArrayList<Administrator>();
 

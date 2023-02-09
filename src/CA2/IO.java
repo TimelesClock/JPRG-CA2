@@ -135,7 +135,7 @@ public class IO implements Serializable {
     }
 
     public static ArrayList<Administrator> importAdmin() throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
-        return (ArrayList<Administrator>) IO.deserialize("Admin.dat");
+        return (ArrayList<Administrator>) deserialize("Admin.dat");
     }
 
     public static String hash(String pw) throws NoSuchAlgorithmException {
