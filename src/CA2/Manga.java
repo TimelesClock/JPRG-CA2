@@ -12,9 +12,9 @@ import java.io.Serializable;
  */
 public class Manga extends Comic implements Serializable{
     private boolean translated;
-    public Manga(String newISBN, String newTitle, int newPageNum, double newCost, String newType, String newLanguage,boolean translated) {
-        super(newISBN, newTitle, newPageNum, newCost, newType, newLanguage);
-        translated = translated;
+    public Manga(String newISBN, String newTitle, int newPageNum, double newCost, String newLanguage,boolean isTranslated) {
+        super(newISBN, newTitle, newPageNum, newCost, "Manga", isTranslated?"EN":"JP");
+        translated = isTranslated;
     }
 
     public boolean isTranslated() {

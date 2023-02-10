@@ -46,6 +46,7 @@ public class IO implements Serializable {
 
     public static void export(ArrayList<Comic> comicArr, ArrayList<Rentee> renteeArr, ArrayList<Administrator> adminArr) throws IOException, NoSuchAlgorithmException {
         IO.serialize(comicArr, "Comic.dat");
+        
         IO.serialize(renteeArr, "Rentee.dat");
         IO.serialize(adminArr, "Admin.dat");
 //        String data = "root;" + hash("root") + ";root;" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + ";3\n";
@@ -129,7 +130,12 @@ public class IO implements Serializable {
         
         for (String index : comicData){
             String[] i = index.split(";");
-            comicArr.add(new Comic(i[0],i[1],Integer.parseInt(i[2]),Double.parseDouble(i[3]),i[4],i[5]));
+            if (i[4].equals("Manga")){
+                comicArr.add(new Manga(i[0],i[1],Integer.parseInt(i[2]),Double.parseDouble(i[3]),i[4],i[5].equals("EN")));
+            }else{
+                comicArr.add(new Comic(i[0],i[1],Integer.parseInt(i[2]),Double.parseDouble(i[3]),i[4],i[5]));
+            }
+            
         }
         return comicArr;
     }
