@@ -24,8 +24,32 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      */
+    //on load
     public GUI() {
         initComponents();
+        try {
+
+            rental = new RentalSystem();
+            rental.importComics();
+            rental.importRentee();
+            rental.importAdmin();
+
+            comicArr = rental.getComicArr();
+            renteeArr = rental.getRenteeArr();
+            mangaArr = rental.getMangaArr();
+            comicPage = 1;
+            renteePage = 1;
+            //Setting comic and rentee max pages
+            comicPages = comicArr.size() + mangaArr.size();
+            renteePages = renteeArr.size();
+            //Settig Comic Data
+            displayComic();
+
+            //Setting Rentee Data
+            displayRentee();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -81,11 +105,6 @@ public class GUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
 
         comicPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
@@ -550,11 +569,11 @@ public class GUI extends javax.swing.JFrame {
             System.out.println(e);
         }
     }//GEN-LAST:event_comicPrevActionPerformed
-
+    //Function to rerender/re display the comic data fields
     private void displayComic() {
         comicLabel.setText(String.format("Comic %d of %d", comicPage, comicPages));
 
-        renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
+        
 
         isbnField.setText(comicArr.get(comicPage - 1).getISBN());
         titleField.setText(comicArr.get(comicPage - 1).getTitle());
@@ -563,11 +582,18 @@ public class GUI extends javax.swing.JFrame {
         if (comicArr.get(comicPage - 1).getType().equals("Comic")) {
             comicInfo.setText("This is a Comic in English");
         } else {
-            comicInfo.setText("This is a Manga in " + comicArr.get(comicPage - 1).getLanguage());
+            if (comicArr.get(comicPage - 1).getLanguage().equals("EN")) {
+                comicInfo.setText("This is a Manga translated to English ");
+            } else {
+                comicInfo.setText("This is a Manga in Japanese");
+            }
+
         }
     }
+    //Function to rerender/re display the rentee data fields
 
     private void displayRentee() {
+        renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
         renteeID.setText(renteeArr.get(renteePage - 1).getMemberID());
         renteeName.setText(renteeArr.get(renteePage - 1).getName());
 
@@ -579,6 +605,7 @@ public class GUI extends javax.swing.JFrame {
         }
 
         for (Comic comic : renteeArr.get(renteePage - 1).getComics()) {
+            //For every comic in rentee, add new row into the table
             String[] rowData = {
                 comic.getISBN(),
                 comic.getTitle(),
@@ -589,32 +616,6 @@ public class GUI extends javax.swing.JFrame {
             model.addRow(rowData);
         }
     }
-
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        try {
-            rental = new RentalSystem();
-            rental.importComics();
-            rental.importRentee();
-            rental.importAdmin();
-
-            comicArr = rental.getComicArr();
-            renteeArr = rental.getRenteeArr();
-            mangaArr = rental.getMangaArr();
-            comicPage = 1;
-            renteePage = 1;
-            //Setting comic and rentee max pages
-            comicPages = comicArr.size() + mangaArr.size();
-            renteePages = renteeArr.size();
-            //Settig Comic Data
-            displayComic();
-
-            //Setting Rentee Data
-            displayRentee();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-    }//GEN-LAST:event_formWindowActivated
 
     private void comicNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicNextActionPerformed
         try {
