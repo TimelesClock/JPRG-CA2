@@ -12,16 +12,20 @@ import java.security.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
-//import java.io.FileOutputStream;
+
 import java.util.Properties;
-//import java.text.SimpleDateFormat;
-//import java.nio.file.Files;
-//import java.nio.file.Path;
-//import java.nio.file.Paths;
-//import java.io.FileWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
- * Class: DIT/FT/1B/02 Name: Leong Yu Zhi Andy Admission Number: P2205865
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
+ * @author leong
+ */
+/**
+ * 
  *
  * @author leong
  */
@@ -37,7 +41,7 @@ public class RentalSystem {
             importComics();
             importRentee();
             importAdmin();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 
@@ -62,12 +66,12 @@ public class RentalSystem {
     public ArrayList<Administrator> getAdminArr() {
         return adminArr;
     }
-
-    public void addComicToRentee(String ID, String ISBN) throws IOException, NoSuchAlgorithmException {
+    //Add comics to rentee, same as CA1
+    public String addComicToRentee(String name, String comicName) throws IOException, NoSuchAlgorithmException {
         int index = -1;
         int index2 = -1;
         for (int i = 0; i < renteeArr.size(); i++) {
-            if (renteeArr.get(i).getMemberID().equals(ID)) {
+            if (renteeArr.get(i).getName().equals(name)) {
                 index = i;
                 break;
 
@@ -77,18 +81,13 @@ public class RentalSystem {
             List<String> comic = new ArrayList<String>();
 
             for (int k = 0; k < renteeArr.get(index).getComics().size(); k++) {
-                comic.add(renteeArr.get(index).getComics().get(k).getISBN());
+                comic.add(renteeArr.get(index).getComics().get(k).getTitle());
             }
-
-            if (comic.contains(ISBN)) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "The rentee already has this comic!",
-                        "Input",
-                        JOptionPane.ERROR_MESSAGE);
+            if (comic.contains(comicName)) {
+                return "The rentee already has this comic!";
             } else {
                 for (int o = 0; o < comicArr.size(); o++) {
-                    if (comicArr.get(o).getISBN().equals(ISBN)) {
+                    if (comicArr.get(o).getTitle().equals(comicName)) {
                         index2 = o;
                     }
                 }
@@ -99,78 +98,18 @@ public class RentalSystem {
                     temp.add(comicArr.get(index2));
                     renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
                     IO.export(comicArr, renteeArr, adminArr);
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Comic has been successfully added to the Rentee",
-                            "Input",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    return "Comic has been successfully added to the Rentee";
                 }
 
             }
         } else {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "The member ID entered could not be found!",
-                    "Input",
-                    JOptionPane.ERROR_MESSAGE);
+            return "The member ID entered could not be found!";
         }
+        return "";
 
     }
 
-    public void rmvComicFromRentee(String ID, String ISBN) throws IOException, NoSuchAlgorithmException {
-        int index = -1;
-        int index2 = -1;
-        for (int i = 0; i < renteeArr.size(); i++) {
-            if (renteeArr.get(i).getMemberID().equals(ID)) {
-                index = i;
-                break;
-
-            }
-        }
-        if (index != -1) {
-            List<String> comic = new ArrayList<String>();
-
-            for (int k = 0; k < renteeArr.get(index).getComics().size(); k++) {
-                comic.add(renteeArr.get(index).getComics().get(k).getISBN());
-            }
-
-            if (!comic.contains(ISBN)) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "The rentee does not have this comic!",
-                        "Input",
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                for (int o = 0; o < comicArr.size(); o++) {
-                    if (comicArr.get(o).getISBN().equals(ISBN)) {
-                        index2 = o;
-                    }
-                }
-
-                if (index2 != -1) {
-                    Rentee rent = renteeArr.get(index);
-                    ArrayList<Comic> temp = rent.getComics();
-                    temp.remove(temp.indexOf(comicArr.get(index2)));
-                    renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
-                    IO.export(comicArr, renteeArr, adminArr);
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Comic has been successfully removed from the Rentee",
-                            "Input",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
-
-            }
-        } else {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "The member ID entered could not be found!",
-                    "Input",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-
-    }
-
+    //Code testing purposes
     public void createComic() throws IOException, NoSuchAlgorithmException {
         comicArr.add(new Comic("978-0785199618", "Spider-Man: Miles Morales", 112, 14.39, "Comic", "EN"));
         comicArr.add(new Comic("978-0785190219", "Ms. Marvel: No Normal", 120, 15.99, "Comic", "EN"));
@@ -179,98 +118,20 @@ public class RentalSystem {
         comicArr.add(new Manga("978-4091400017", "Doremon", 191, 12.88, "Manga", true));
         comicArr.add(new Manga("978-4091400017", "Doremon", 191, 12.88, "Manga", false));
     }
-
+    //Code testing purposes
     public void createRentee() throws IOException, NoSuchAlgorithmException {
         renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), hash("123"), "2022.12.26 23:34:47"));
         renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), hash("123"), "2022.12.26 23:34:47"));
         renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), hash("123"), "2022.12.26 23:34:47"));
 
     }
-
+    //Code testing purposes
     public void createAdmin() throws IOException, NoSuchAlgorithmException {
         adminArr.add(new Administrator("A110620", "rootLow", "2", hash("root"), "2022.12.26 23:34:47"));
         adminArr.add(new Administrator("root", "root", "3", hash("root"), "2022.12.26 23:34:47"));
 
     }
-
-    public void displayComic() {
-        String text = String.format("%-15s| %-30s| %-7s| %-10s| %s\n%s\n", "ISBN-13", "Title", "Pages", "Price/Day", "Deposit", "-".repeat(80));
-
-        for (int index = 0; index < comicArr.size(); index++) {
-            Comic i = comicArr.get(index);
-            text += String.format("%-15s| %-30s| %-7d| %-10.2f| %.2f\n", i.getISBN(), i.getTitle(), i.getPageNum(), (i.getCost() / 20.0), (i.getCost() * 1.10));
-        }
-
-        JOptionPane.showMessageDialog(
-                null,
-                text,
-                "All Comics",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-    }
-
-    public void findComic() {
-        String userInput = (JOptionPane.showInputDialog(
-                null,
-                "Enter ISBN-13 to search:",
-                "Input",
-                JOptionPane.QUESTION_MESSAGE));
-        Comic flag = null;
-        for (Comic i : comicArr) {
-            if (i.getISBN().equals(userInput)) {
-                flag = i;
-                break;
-            }
-        }
-        if (flag != null) {
-            double price = flag.getCost();
-            String text = String.format("%s\n\nStock purchased at $%.2f.\nCost $%.2f per day to rent.\nRequire deposit of $%.2f.", flag.getTitle(), price, price / 20, price * 1.1);
-            JOptionPane.showMessageDialog(
-                    null,
-                    text,
-                    "Message",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        } else {
-            JOptionPane.showMessageDialog(
-                    null,
-                    String.format("Cannot find the Comic \"%s\"!!", userInput),
-                    "Info",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-    }
-
-    public void displayMember() throws IOException {
-        List<String> results = new ArrayList<String>();
-        String text = String.format("%-15s| %-20s| %-20s| %s\n%s\n", "Member ID", "Name", "Permission Level", "Last Login", "-".repeat(80));
-        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
-        for (File file : files) {
-            if (file.isFile()) {
-                results.add(file.getName());
-            }
-        }
-        for (String name : results) {
-            if (name.equals("counter.properties")) {
-                continue;
-            }
-            FileInputStream in = new FileInputStream(new File("").getAbsolutePath() + "\\users\\" + name);
-            Properties prop = new Properties();
-
-            prop.load(in);
-            in.close();
-            text += String.format("%-15s| %-20s| %-20s| %s\n", prop.getProperty("memberID"), prop.getProperty("name"), prop.getProperty("permLevel"), prop.getProperty("login"));
-
-        }
-        JOptionPane.showMessageDialog(
-                null,
-                text,
-                "All Comics",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-    }
-
+    //Get earning stats
     public String getEarning() {
         int renteeNum = renteeArr.size();
         double total = 0.0;
@@ -288,24 +149,63 @@ public class RentalSystem {
         return out;
 
     }
-
+    //Add new rentee
     public void addToRentee(String memberID, String name, ArrayList<Comic> comic, String password, String login) throws IOException, NoSuchAlgorithmException {
         Rentee newRentee = new Rentee(memberID, name, comic, password, login);
         renteeArr.add(newRentee);
         IO.export(comicArr, renteeArr, adminArr);
 
     }
-
+    //Not used in ca2
     public void addToAdmin(String memberID, String name, String perm, String password, String login) throws IOException, NoSuchAlgorithmException {
         Administrator newAdmin = new Administrator(memberID, name, perm, password, login);
         adminArr.add(newAdmin);
         IO.export(comicArr, renteeArr, adminArr);
 
     }
+    
+    public void removeFromRentee(String memberName) throws IOException,NoSuchAlgorithmException{
+        //Remove rentee from renteelist
+        int index = 0;
+        for (Rentee rentee : renteeArr){
+            if (rentee.getName().equals(memberName)){
+                break;
+            }else{
+                index++;
+            }
+        }
+        
+        renteeArr.remove(index);
+        IO.export(comicArr, renteeArr, adminArr);
+    }
+    
+    public void removeFromComic(String comicName) throws IOException,NoSuchAlgorithmException,ClassNotFoundException{
+        //Remove comic from comic list
+        int index = 0;
+        for (Comic comic : comicArr){
+            if (comic.getTitle().equals(comicName)){
+                break;
+            }else{
+                index++;
+            }
+        }
+        
+        comicArr.remove(index);
+        IO.export(comicArr, renteeArr, adminArr);
+        //Importing rentee to remove the non existent comics
+        importRentee();
+    }
 
     public void addToComic(String title, String ISBN, String pageNum, String cost, String type, String language) throws IOException, NoSuchAlgorithmException {
-        Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost), type, language);
-        comicArr.add(comic);
+        //Adds either a manga object or comic object based on GUI
+        if (type.equals("Manga")) {
+            Manga manga = new Manga(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost), type, language.equals("English"));
+            comicArr.add(manga);
+        } else {
+            Comic comic = new Comic(ISBN, title, Integer.parseInt(pageNum), Double.parseDouble(cost), type, language.equals("English") ? "EN" : "JP");
+            comicArr.add(comic);
+        }
+
         IO.export(comicArr, renteeArr, adminArr);
     }
 
@@ -331,42 +231,27 @@ public class RentalSystem {
         }
     }
 
-//    public static void updateCounter() throws IOException {
-//        File counter = new File(new File("").getAbsolutePath() + "\\users\\counter.properties");
-//        Properties counterProp = new Properties();
-//        FileOutputStream createCounter = new FileOutputStream(counter, false);
-//
-//        int admin = 0;
-//        int member = 0;
-//        int num;
-//        File[] files = new File(new File("").getAbsolutePath() + "\\users\\").listFiles();
-//        for (File file : files) {
-//            if (file.isFile()) {
-//                if (isNum(file.getName().replaceFirst("[.][^.]+$", "").substring(1))) {
-//                    num = Integer.parseInt(file.getName().replaceFirst("[.][^.]+$", "").substring(1));
-//                    if ("A".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > admin) {
-//                        admin = num;
-//                    } else if ("M".equals(file.getName().replaceFirst("[.][^.]+$", "").substring(0, 1)) && num > member) {
-//                        member = num;
-//                    }
-//                }
-//            }
-//        }
-//
-//        //If there are no admin/member files then admin counter = 110620,member counter = 220622
-//        if (admin == 0) {
-//            admin = 110620;
-//        }
-//        if (member == 0) {
-//            member = 220622;
-//        }
-//
-//        counterProp.put("admin", admin + "");
-//        counterProp.put("member", member + "");
-//
-//        counterProp.store(createCounter, "ID counter");
-//        createCounter.close();
-//    }
+    public static boolean isInt(String s) {
+        //Im too tired to do another regex
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+        // if doesnt return false
+        return true;
+    }
+
+    public static boolean validateISBN(String isbn) {
+        Pattern regex = Pattern.compile("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$");
+
+        Matcher match = regex.matcher(isbn);
+
+        return match.find();
+    }
+
     public void importComics() throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
         this.comicArr = IO.importComics();
     }
@@ -380,6 +265,7 @@ public class RentalSystem {
     }
 
     public boolean login(String ID, String pwd) {
+        //Return true if login credentials match
         try {
             boolean flag = false;
             for (Administrator admin : adminArr) {
@@ -399,6 +285,7 @@ public class RentalSystem {
     }
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
+        //Code testing
         RentalSystem rental = new RentalSystem();
         rental.createComic();
         rental.createRentee();

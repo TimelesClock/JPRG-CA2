@@ -8,15 +8,22 @@ package CA2;
  *
  * @author leong
  */
-import java.io.IOException;
+
+/**
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
+ * @author leong
+ */
+
 import javax.swing.JOptionPane;
-import java.util.List;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.security.*;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.FileInputStream;
+
 import javax.swing.table.DefaultTableModel;
 
 public class GUI extends javax.swing.JFrame {
@@ -24,6 +31,7 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      */
+    
     //on load
     public GUI() {
         initComponents();
@@ -37,7 +45,7 @@ public class GUI extends javax.swing.JFrame {
             comicPage = 1;
             renteePage = 1;
             //Setting comic and rentee max pages
-            comicPages = comicArr.size() + mangaArr.size();
+            comicPages = comicArr.size();
             renteePages = renteeArr.size();
             //Settig Comic Data
             displayComic();
@@ -103,6 +111,11 @@ public class GUI extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         comicPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
@@ -472,6 +485,7 @@ public class GUI extends javax.swing.JFrame {
         jLabel3.setText("Comic Rental System");
 
         jButton1.setBackground(new java.awt.Color(0, 0, 204));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Admin Panel");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -547,6 +561,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void endBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endBtnActionPerformed
         try {
+            //Export and close program
             IO.export(comicArr, renteeArr, adminArr);
             JOptionPane.showMessageDialog(
                     null,
@@ -581,51 +596,67 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_comicPrevActionPerformed
     //Function to rerender/re display the comic data fields
-    private void displayComic() {
-        comicLabel.setText(String.format("Comic %d of %d", comicPage, comicPages));
+    public void displayComic() {
+        try {
+            rental.importComics();
+            //Bunch of set text
+            comicArr = rental.getComicArr();
+            comicPages = comicArr.size();
+            comicLabel.setText(String.format("Comic %d of %d", comicPage, comicPages));
 
-        
-
-        isbnField.setText(comicArr.get(comicPage - 1).getISBN());
-        titleField.setText(comicArr.get(comicPage - 1).getTitle());
-        rentalField.setText(String.format("$%.2f", (comicArr.get(comicPage - 1).getCost() / 20.0)));
-        depositField.setText(String.format("$%.2f", (comicArr.get(comicPage - 1).getCost() * 1.10)));
-        if (comicArr.get(comicPage - 1).getType().equals("Comic")) {
-            comicInfo.setText("This is a Comic in English");
-        } else {
-            if (comicArr.get(comicPage - 1).getLanguage().equals("EN")) {
-                comicInfo.setText("This is a Manga translated to English ");
+            isbnField.setText(comicArr.get(comicPage - 1).getISBN());
+            titleField.setText(comicArr.get(comicPage - 1).getTitle());
+            rentalField.setText(String.format("$%.2f", (comicArr.get(comicPage - 1).getCost() / 20.0)));
+            depositField.setText(String.format("$%.2f", (comicArr.get(comicPage - 1).getCost() * 1.10)));
+            if (comicArr.get(comicPage - 1).getType().equals("Comic")) {
+                comicInfo.setText("This is a Comic in English");
             } else {
-                comicInfo.setText("This is a Manga in Japanese");
-            }
+                if (comicArr.get(comicPage - 1).getLanguage().equals("EN")) {
+                    comicInfo.setText("This is a Manga translated to English ");
+                } else {
+                    comicInfo.setText("This is a Manga in Japanese");
+                }
 
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
+
     }
+    
     //Function to rerender/re display the rentee data fields
 
     private void displayRentee() {
-        renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
-        renteeID.setText(renteeArr.get(renteePage - 1).getMemberID());
-        renteeName.setText(renteeArr.get(renteePage - 1).getName());
+        try {
+            rental.importRentee();
+            renteeArr= rental.getRenteeArr();
+            renteePages = renteeArr.size();
+            renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
+            renteeID.setText(renteeArr.get(renteePage - 1).getMemberID());
+            renteeName.setText(renteeArr.get(renteePage - 1).getName());
 
-        DefaultTableModel model = (DefaultTableModel) loanData.getModel();
-        int rowCount = model.getRowCount();
-        //Remove rows 1 by 1 based on the size
-        for (int i = rowCount - 1; i >= 0; i--) {
-            model.removeRow(i);
+            DefaultTableModel model = (DefaultTableModel) loanData.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows 1 by 1 based on the size
+            for (int i = rowCount - 1; i >= 0; i--) {
+                model.removeRow(i);
+            }
+
+            for (Comic comic : renteeArr.get(renteePage - 1).getComics()) {
+                //For every comic in rentee, add new row into the table
+                String[] rowData = {
+                    comic.getISBN(),
+                    comic.getTitle(),
+                    String.format("$%.2f", (comic.getCost() / 20.0)),
+                    String.format("$%.2f", (comic.getCost() * 1.10))
+
+                };
+                model.addRow(rowData);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
-        for (Comic comic : renteeArr.get(renteePage - 1).getComics()) {
-            //For every comic in rentee, add new row into the table
-            String[] rowData = {
-                comic.getISBN(),
-                comic.getTitle(),
-                String.format("$%.2f", (comic.getCost() / 20.0)),
-                String.format("$%.2f", (comic.getCost() * 1.10))
-
-            };
-            model.addRow(rowData);
-        }
     }
 
     private void comicNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicNextActionPerformed
@@ -671,7 +702,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_clearSOUTActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-
+        //Search button
         String in = searchIn.getText();
         if (renteeSearch.isSelected()) {
             boolean flag = false;
@@ -717,6 +748,11 @@ public class GUI extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         new Login().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+    //Rerender when window is focused/clicked
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        displayComic();
+        displayRentee();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments

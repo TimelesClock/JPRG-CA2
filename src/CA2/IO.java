@@ -18,7 +18,12 @@ import java.util.ArrayList;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+/**
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
+ * @author leong
+ */
 /**
  *
  * @author leong
@@ -51,6 +56,7 @@ public class IO implements Serializable {
         IO.serialize(adminArr, "Admin.dat");
 //        String data = "root;" + hash("root") + ";root;" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + ";3\n";
         String renteeData = "";
+        //Handle export of rentee data
         for (Rentee rentee : renteeArr) {
             ArrayList<Comic> comics = rentee.getComics();
 
@@ -65,12 +71,14 @@ public class IO implements Serializable {
 
             renteeData += rentee.getMemberID() + ";" + rentee.getName() + ";" + comic + ";1;" + rentee.getPassword() + ";" + rentee.getLogin() + "\n";
         }
+        //Handle export of comic data
         String comicData = "";
         for (Comic comic : comicArr) {
             comicData += comic.getISBN() + ";" + comic.getTitle() + ";" + comic.getPageNum() + ';' + comic.getCost() + ";" + comic.getType() + ";" + comic.getLanguage() + "\n";
         }
 
         try {
+            //Filewriter, write,flush,close
             FileWriter filewriter = new FileWriter("rentees.txt");
             filewriter.write(renteeData);
             filewriter.flush();
@@ -94,7 +102,7 @@ public class IO implements Serializable {
         String data = Files.readString(filePath);
 
         String[] members = data.split("\n");
-
+        //Due to requirements, get txt as string, read using .split method
         for (String member : members) {
             String[] memberData = member.split(";");
             ArrayList<Comic> comicList = new ArrayList<Comic>();
@@ -124,7 +132,7 @@ public class IO implements Serializable {
         //Whats the point of serializing if we ar gonna read from txt
         Path filePath = Paths.get("comics.txt");
         String data = Files.readString(filePath);
-        
+        //Due to requirements, get txt as string, read using .split method
         String[] comicData = data.split("\n");
         ArrayList<Comic> comicArr = new ArrayList<Comic>();
         

@@ -8,7 +8,12 @@ package CA2;
  *
  * @author leong
  */
-import java.util.ArrayList;
+/**
+ * Class: DIT/FT/1B/02 
+ * Name: Leong Yu Zhi Andy 
+ * Admission Number: P2205865
+ * @author leong
+ */
 import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
@@ -119,6 +124,7 @@ public class Login extends javax.swing.JFrame {
             boolean isLogin = rental.login(username.getText(), new String(password.getPassword()));
             if (isLogin) {
                 JOptionPane.showMessageDialog(null, "Logging in...", "Success", JOptionPane.INFORMATION_MESSAGE);
+                new AdminPanel().setVisible(true);
                 super.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Member ID or Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
