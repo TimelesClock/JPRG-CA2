@@ -33,6 +33,14 @@ public class RentalSystem {
     private ArrayList<Administrator> adminArr = new ArrayList<Administrator>();
 
     public RentalSystem() {
+        try {
+            importComics();
+            importRentee();
+            importAdmin();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
     }
 
     public ArrayList<Manga> getMangaArr() {
@@ -234,8 +242,6 @@ public class RentalSystem {
 
     }
 
-    
-
     public void displayMember() throws IOException {
         List<String> results = new ArrayList<String>();
         String text = String.format("%-15s| %-20s| %-20s| %s\n%s\n", "Member ID", "Name", "Permission Level", "Last Login", "-".repeat(80));
@@ -371,6 +377,25 @@ public class RentalSystem {
 
     public void importAdmin() throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
         this.adminArr = IO.importAdmin();
+    }
+
+    public boolean login(String ID, String pwd) {
+        try {
+            boolean flag = false;
+            for (Administrator admin : adminArr) {
+                if (admin.getMemberID().equals(ID)) {
+                    if (hash(pwd).equals(admin.getPassword())) {
+                        flag = true;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return flag;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
     }
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
