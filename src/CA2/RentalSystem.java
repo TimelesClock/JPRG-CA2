@@ -4,16 +4,16 @@
  */
 package CA2;
 
-import javax.swing.JOptionPane;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.security.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileInputStream;
 
-import java.util.Properties;
+import java.io.IOException;
+
+
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +96,7 @@ public class RentalSystem {
                     Rentee rent = renteeArr.get(index);
                     ArrayList<Comic> temp = rent.getComics();
                     temp.add(comicArr.get(index2));
-                    renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp, rent.getPassword(), rent.getLogin()));
+                    renteeArr.set(index, new Rentee(rent.getMemberID(), rent.getName(), temp));
                     IO.export(comicArr, renteeArr, adminArr);
                     return "Comic has been successfully added to the Rentee";
                 }
@@ -120,15 +120,15 @@ public class RentalSystem {
     }
     //Code testing purposes
     public void createRentee() throws IOException, NoSuchAlgorithmException {
-        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1))), hash("123"), "2022.12.26 23:34:47"));
-        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2))), hash("123"), "2022.12.26 23:34:47"));
-        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3))), hash("123"), "2022.12.26 23:34:47"));
+        renteeArr.add(new Rentee("M220622", "Ariq Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(1)))));
+        renteeArr.add(new Rentee("M220623", "Sayang Sulaiman", new ArrayList<Comic>(Arrays.asList(comicArr.get(0), comicArr.get(2)))));
+        renteeArr.add(new Rentee("M220624", "Ben Dover", new ArrayList<Comic>(Arrays.asList(comicArr.get(3), comicArr.get(3)))));
 
     }
     //Code testing purposes
     public void createAdmin() throws IOException, NoSuchAlgorithmException {
-        adminArr.add(new Administrator("A110620", "rootLow", "2", hash("root"), "2022.12.26 23:34:47"));
-        adminArr.add(new Administrator("root", "root", "3", hash("root"), "2022.12.26 23:34:47"));
+        adminArr.add(new Administrator("A110620", "rootLow", hash("root")));
+        adminArr.add(new Administrator("root", "root", hash("root")));
 
     }
     //Get earning stats
@@ -150,15 +150,15 @@ public class RentalSystem {
 
     }
     //Add new rentee
-    public void addToRentee(String memberID, String name, ArrayList<Comic> comic, String password, String login) throws IOException, NoSuchAlgorithmException {
-        Rentee newRentee = new Rentee(memberID, name, comic, password, login);
+    public void addToRentee(String memberID, String name, ArrayList<Comic> comic) throws IOException, NoSuchAlgorithmException {
+        Rentee newRentee = new Rentee(memberID, name, comic);
         renteeArr.add(newRentee);
         IO.export(comicArr, renteeArr, adminArr);
 
     }
     //Not used in ca2
-    public void addToAdmin(String memberID, String name, String perm, String password, String login) throws IOException, NoSuchAlgorithmException {
-        Administrator newAdmin = new Administrator(memberID, name, perm, password, login);
+    public void addToAdmin(String memberID, String name, String password) throws IOException, NoSuchAlgorithmException {
+        Administrator newAdmin = new Administrator(memberID, name, password);
         adminArr.add(newAdmin);
         IO.export(comicArr, renteeArr, adminArr);
 
@@ -270,7 +270,7 @@ public class RentalSystem {
             boolean flag = false;
             for (Administrator admin : adminArr) {
                 if (admin.getMemberID().equals(ID)) {
-                    if (hash(pwd).equals(admin.getPassword())) {
+                    if (hash(pwd).equals(admin.getPw())) {
                         flag = true;
                     } else {
                         break;

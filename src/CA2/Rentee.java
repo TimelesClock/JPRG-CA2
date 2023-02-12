@@ -15,8 +15,8 @@ import java.io.Serializable;
 public class Rentee extends Users implements Serializable{
     private ArrayList<Comic> comics;
 
-    public Rentee(String memberID, String name, ArrayList<Comic> comics,String pw,String login) throws NoSuchAlgorithmException {
-        super(memberID,name,"1",pw,login);
+    public Rentee(String memberID, String name, ArrayList<Comic> comics) throws NoSuchAlgorithmException {
+        super(memberID,name);
         this.comics = comics;
     }
 

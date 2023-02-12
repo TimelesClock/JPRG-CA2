@@ -2,21 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package CA2;
+package ca2.skye;
 
 import java.io.Serializable;
 
 /**
- * Class: DIT/FT/1B/02 Name: Leong Yu Zhi Andy Admission Number: P2205865
  *
  * @author leong
  */
-public class Manga extends Comic implements Serializable {
-
+public class Manga extends Comic implements Serializable{
     private boolean translated;
-
-    public Manga(String newISBN, String newTitle, int newPageNum, double newCost, String newLanguage, boolean isTranslated) {
-        super(newISBN, newTitle, newPageNum, newCost, "Manga", isTranslated ? "EN" : "JP");
+    public Manga(String newISBN, String newTitle, int newPageNum, double newCost, String newLanguage,boolean isTranslated) {
+        super(newISBN, newTitle, newPageNum, newCost, "Manga", isTranslated?"EN":"JP");
         translated = isTranslated;
     }
 
@@ -27,5 +24,6 @@ public class Manga extends Comic implements Serializable {
     public void setTranslated(boolean translated) {
         this.translated = translated;
     }
-
+    
+    
 }

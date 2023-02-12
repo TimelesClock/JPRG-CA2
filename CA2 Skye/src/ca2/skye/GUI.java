@@ -2,20 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package CA2;
+package ca2.skye;
 
 /**
  *
  * @author leong
  */
-
 /**
- * Class: DIT/FT/1B/02 
- * Name: Leong Yu Zhi Andy 
- * Admission Number: P2205865
+ *
  * @author leong
  */
-
 import javax.swing.JOptionPane;
 
 import java.util.ArrayList;
@@ -31,7 +27,6 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      */
-    
     //on load
     public GUI() {
         initComponents();
@@ -41,7 +36,6 @@ public class GUI extends javax.swing.JFrame {
 
             comicArr = rental.getComicArr();
             renteeArr = rental.getRenteeArr();
-            mangaArr = rental.getMangaArr();
             comicPage = 1;
             renteePage = 1;
             //Setting comic and rentee max pages
@@ -108,7 +102,8 @@ public class GUI extends javax.swing.JFrame {
         endBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        earnMonth = new javax.swing.JButton();
+        earnYear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -484,13 +479,18 @@ public class GUI extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(0, 0, 204));
         jLabel3.setText("Comic Rental System");
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 204));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Admin Panel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        earnMonth.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        earnMonth.setText("Get Earning By Month");
+        earnMonth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                earnMonthActionPerformed(evt);
+            }
+        });
+
+        earnYear.setText("Get Earning By Year");
+        earnYear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                earnYearActionPerformed(evt);
             }
         });
 
@@ -505,20 +505,20 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(comicPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(comicLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel3)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(renteeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(12, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(earnMonth)
+                        .addGap(18, 18, 18)
+                        .addComponent(earnYear, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(endBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33))))
@@ -527,10 +527,8 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comicLabel)
                     .addComponent(renteeLabel))
@@ -548,12 +546,19 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(endBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(endBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(earnYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(earnMonth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
@@ -562,7 +567,7 @@ public class GUI extends javax.swing.JFrame {
     private void endBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endBtnActionPerformed
         try {
             //Export and close program
-            IO.export(comicArr, renteeArr, adminArr);
+            IO.export(comicArr, renteeArr);
             JOptionPane.showMessageDialog(
                     null,
                     "Saving data...",
@@ -603,9 +608,7 @@ public class GUI extends javax.swing.JFrame {
             comicArr = rental.getComicArr();
             comicPages = comicArr.size();
             comicLabel.setText(String.format("Comic %d of %d", comicPage, comicPages));
-            if (comicPages == 0){
-                return;
-            }
+
             isbnField.setText(comicArr.get(comicPage - 1).getISBN());
             titleField.setText(comicArr.get(comicPage - 1).getTitle());
             rentalField.setText(String.format("$%.2f", (comicArr.get(comicPage - 1).getCost() / 20.0)));
@@ -625,18 +628,14 @@ public class GUI extends javax.swing.JFrame {
         }
 
     }
-    
-    //Function to rerender/re display the rentee data fields
 
+    //Function to rerender/re display the rentee data fields
     private void displayRentee() {
         try {
             rental.importRentee();
-            renteeArr= rental.getRenteeArr();
+            renteeArr = rental.getRenteeArr();
             renteePages = renteeArr.size();
             renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
-            if(renteePages == 0){
-                return;
-            }
             renteeID.setText(renteeArr.get(renteePage - 1).getMemberID());
             renteeName.setText(renteeArr.get(renteePage - 1).getName());
 
@@ -699,7 +698,20 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_renteeNextActionPerformed
 
     private void getStatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getStatActionPerformed
-        sout.setText(rental.getEarning());
+        int renteeNum = renteeArr.size();
+        double total = 0.0;
+
+        for (Rentee i : renteeArr) {
+            for (Comic o : i.getComics()) {
+                total += o.getCost() / 20.0;
+            }
+        }
+
+        double average = total / renteeNum;
+
+        String out = String.format("Earning Per Day:\n---------------\nThere are %d Rentees in total.\n\nAverage earning day based on numbers of rentees is $%.2f.\n\nTotal earning per day is $%.2f.", renteeNum, average, total);
+
+        sout.setText(out);
     }//GEN-LAST:event_getStatActionPerformed
 
     private void clearSOUTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSOUTActionPerformed
@@ -749,15 +761,45 @@ public class GUI extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_searchBtnActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new Login().setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
     //Rerender when window is focused/clicked
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         displayComic();
         displayRentee();
     }//GEN-LAST:event_formWindowActivated
+
+    private void earnMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_earnMonthActionPerformed
+        int renteeNum = renteeArr.size();
+        double total = 0.0;
+
+        for (Rentee i : renteeArr) {
+            for (Comic o : i.getComics()) {
+                total += (o.getCost() / 20.0) * 30;
+            }
+        }
+
+        double average = total / renteeNum;
+
+        String out = String.format("Earning Per Month:\n---------------\nThere are %d Rentees in total.\n\nTotal earning per month is $%.2f.", renteeNum, total);
+
+        sout.setText(out);
+    }//GEN-LAST:event_earnMonthActionPerformed
+
+    private void earnYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_earnYearActionPerformed
+        int renteeNum = renteeArr.size();
+        double total = 0.0;
+
+        for (Rentee i : renteeArr) {
+            for (Comic o : i.getComics()) {
+                total += (o.getCost() / 20.0) * 365;
+            }
+        }
+
+        double average = total / renteeNum;
+
+        String out = String.format("Earning Per Year:\n---------------\nThere are %d Rentees in total.\n\nTotal earning per Year is $%.2f.", renteeNum, total);
+
+        sout.setText(out);
+    }//GEN-LAST:event_earnYearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -785,6 +827,7 @@ public class GUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -802,7 +845,6 @@ public class GUI extends javax.swing.JFrame {
     private int renteePages;
     private ArrayList<Manga> mangaArr;
     private ArrayList<Comic> comicArr;
-    private ArrayList<Administrator> adminArr;
     private ArrayList<Rentee> renteeArr;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clearSOUT;
@@ -813,10 +855,11 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton comicPrev;
     private javax.swing.JRadioButton comicSearch;
     private javax.swing.JTextField depositField;
+    private javax.swing.JButton earnMonth;
+    private javax.swing.JButton earnYear;
     private javax.swing.JButton endBtn;
     private javax.swing.JButton getStat;
     private javax.swing.JTextField isbnField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

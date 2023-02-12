@@ -506,7 +506,7 @@ public class AdminPanel extends javax.swing.JFrame {
         try{
             if (!nameIn.getText().equals("")){
                 int id = Integer.parseInt(renteeArr.get(renteeArr.size()-1).getMemberID().replaceFirst("[.][^.]+$", "").substring(1))+1;
-                rental.addToRentee("M"+id,nameIn.getText(),new ArrayList<Comic>(),"","null");
+                rental.addToRentee("M"+id,nameIn.getText(),new ArrayList<Comic>());
                 JOptionPane.showMessageDialog(null, "Rentee Added Successfully!","Success",JOptionPane.INFORMATION_MESSAGE);
                 populateRentee();
             }

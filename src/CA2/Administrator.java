@@ -12,7 +12,19 @@ import java.io.Serializable;
  * @author leong
  */
 public class Administrator extends Users implements Serializable{
-    public Administrator(String memberID, String name,String perm,String pw,String login) throws NoSuchAlgorithmException{
-        super(memberID,name,perm,pw,login);
+    private String pw;
+    
+    public Administrator(String memberID, String name,String pw) throws NoSuchAlgorithmException{
+        super(memberID,name);
+        this.pw = pw;
     }
+
+    public String getPw() {
+        return pw;
+    }
+
+    public void setPw(String pw) {
+        this.pw = pw;
+    }
+    
 }
