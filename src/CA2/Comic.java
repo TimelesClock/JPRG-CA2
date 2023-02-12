@@ -2,16 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-
 package CA2;
+
 import java.io.Serializable;
+
 /**
- * Class: DIT/FT/1B/02 
- * Name: Leong Yu Zhi Andy 
- * Admission Number: P2205865
+ * Class: DIT/FT/1B/02 Name: Leong Yu Zhi Andy Admission Number: P2205865
+ *
  * @author leong
  */
-public class Comic implements Serializable{
+public class Comic implements Serializable {
 
     private String ISBN;
     private String title;
@@ -19,8 +19,9 @@ public class Comic implements Serializable{
     private double cost;
     private String type;
     private String language;
-    
-    public Comic(String newISBN, String newTitle, int newPageNum, double newCost,String newType,String newLanguage){
+    //Normal getter setter code for a parent class here moving on...
+
+    public Comic(String newISBN, String newTitle, int newPageNum, double newCost, String newType, String newLanguage) {
         ISBN = newISBN;
         title = newTitle;
         pageNum = newPageNum;
@@ -77,10 +78,4 @@ public class Comic implements Serializable{
         this.language = language;
     }
 
-    
-    
-    
-    
-
-    
 }

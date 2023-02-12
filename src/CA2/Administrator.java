@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class Administrator extends Users implements Serializable{
     private String pw;
-    
+    //More constructors,getter and setters! Why am i not surprised
     public Administrator(String memberID, String name,String pw) throws NoSuchAlgorithmException{
         super(memberID,name);
         this.pw = pw;

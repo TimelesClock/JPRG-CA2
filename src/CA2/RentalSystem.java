@@ -38,6 +38,7 @@ public class RentalSystem {
 
     public RentalSystem() {
         try {
+            //When RentalSystem is called, import comic,rentee,admin
             importComics();
             importRentee();
             importAdmin();
@@ -66,7 +67,7 @@ public class RentalSystem {
     public ArrayList<Administrator> getAdminArr() {
         return adminArr;
     }
-    //Add comics to rentee, same as CA1
+    //Add comics to rentee using comic name, same as CA1
     public String addComicToRentee(String name, String comicName) throws IOException, NoSuchAlgorithmException {
         int index = -1;
         int index2 = -1;
@@ -116,7 +117,7 @@ public class RentalSystem {
         comicArr.add(new Comic("978-0785198956", "Secret Wars", 312, 34.99, "Comic", "EN"));
         comicArr.add(new Comic("978-0785156598", "Infinity Gauntlet", 256, 24.99, "Comic", "EN"));
         comicArr.add(new Manga("978-4091400017", "Doremon", 191, 12.88, "Manga", true));
-        comicArr.add(new Manga("978-4091400017", "Doremon", 191, 12.88, "Manga", false));
+        comicArr.add(new Manga("978-4091400018", "DoremonJP", 191, 12.88, "Manga", false));
     }
     //Code testing purposes
     public void createRentee() throws IOException, NoSuchAlgorithmException {

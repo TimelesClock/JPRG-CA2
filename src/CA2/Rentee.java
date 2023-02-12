@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public class Rentee extends Users implements Serializable{
     private ArrayList<Comic> comics;
-
+    //Normal constructor getter setter code right here, move on
     public Rentee(String memberID, String name, ArrayList<Comic> comics) throws NoSuchAlgorithmException {
         super(memberID,name);
         this.comics = comics;

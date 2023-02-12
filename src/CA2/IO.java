@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  * @author leong
  */
 public class IO implements Serializable {
-
+    //Deserialize objects
     public static Object deserialize(String fileName) throws IOException,
             ClassNotFoundException {
         FileInputStream fis = new FileInputStream(fileName);
@@ -48,13 +48,14 @@ public class IO implements Serializable {
 
         fos.close();
     }
-
+    //Export all 3 main arrays, rentee array comic array and admin array
     public static void export(ArrayList<Comic> comicArr, ArrayList<Rentee> renteeArr, ArrayList<Administrator> adminArr) throws IOException, NoSuchAlgorithmException {
+        //Object Serialization
         IO.serialize(comicArr, "Comic.dat");
 
         IO.serialize(renteeArr, "Rentee.dat");
         IO.serialize(adminArr, "Admin.dat");
-//        String data = "root;" + hash("root") + ";root;" + new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new java.util.Date()) + ";3\n";
+        
         String renteeData = "";
         //Handle export of rentee data
         for (Rentee rentee : renteeArr) {
@@ -67,6 +68,8 @@ public class IO implements Serializable {
                     comic += comics.get(i).getISBN() + "#";
                 }
                 comic += comics.get(comics.size() - 1).getISBN(); //No leading "#"
+            }else{
+                comic += "#";
             }
 
             renteeData += rentee.getMemberID() + ";" + rentee.getName() + ";" + comic + "\n";
@@ -96,7 +99,10 @@ public class IO implements Serializable {
     public static ArrayList<Rentee> importRentee(ArrayList<Comic> comicArr) throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
 
         //return (ArrayList<Rentee>) IO.deserialize("Rentee.dat");
-        //Whats the point of serializing if we ar gonna read from txt
+        
+        //Above code is if reading data from deserialization
+        
+        //Whats the point of serializing if we are gonna read from txt
         File file = new File("rentees.txt");
         if (!file.exists()) {
             file.createNewFile();
@@ -115,23 +121,28 @@ public class IO implements Serializable {
         //Due to requirements, get txt as string, read using .split method
         for (String member : members) {
             String[] memberData = member.split(";");
+
             ArrayList<Comic> comicList = new ArrayList<Comic>();
-            for (String comicISBN : memberData[2].split("#")) {
-                if ("".equals(comicISBN)) {
-                    continue;
-                }
-                boolean flag = false;
-                for (Comic i : comicArr) {
-                    if (comicISBN.equals(i.getISBN())) {
-                        comicList.add(i);
-                        flag = true;
-                        break;
+
+            if (!memberData[2].equals("")) {
+                for (String comicISBN : memberData[2].split("#")) {
+                    if ("".equals(comicISBN)) {
+                        continue;
+                    }
+                    boolean flag = false;
+                    for (Comic i : comicArr) {
+                        if (comicISBN.equals(i.getISBN())) {
+                            comicList.add(i);
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (flag == false) {
+                        System.out.println("Comic, " + comicISBN + " is either not added or missing in the system and will not be imported into account " + memberData[0]);
                     }
                 }
-                if (flag == false) {
-                    System.out.println("Comic, " + comicISBN + " is either not added or missing in the system and will not be imported into account " + memberData[0]);
-                }
             }
+
             renteeList.add(new Rentee(memberData[0], memberData[1], comicList));
         }
         return renteeList;
@@ -139,6 +150,9 @@ public class IO implements Serializable {
 
     public static ArrayList<Comic> importComics() throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
         //return (ArrayList<Comic>) IO.deserialize("Comic.dat");
+        
+        //Above code is if reading data from deserialization
+        
         //Whats the point of serializing if we ar gonna read from txt
         File file = new File("comics.txt");
         if (!file.exists()) {
@@ -154,7 +168,6 @@ public class IO implements Serializable {
         //Due to requirements, get txt as string, read using .split method
         String[] comicData = data.split("\n");
 
-        
         ArrayList<Comic> comicArr = new ArrayList<Comic>();
 
         for (String index : comicData) {
@@ -170,6 +183,7 @@ public class IO implements Serializable {
     }
 
     public static ArrayList<Administrator> importAdmin() throws IOException, NoSuchAlgorithmException, ClassNotFoundException {
+        //Handle if file doesnt exist
         File file = new File("Admin.dat");
         if (!file.exists()) {
 
@@ -179,11 +193,12 @@ public class IO implements Serializable {
             IO.serialize(temp, "Admin.dat");
             return (ArrayList<Administrator>) deserialize("Admin.dat");
         } else {
+            //Object deserialization
             return (ArrayList<Administrator>) deserialize("Admin.dat");
         }
 
     }
-
+    //Cant remember why a 2nd version of this is here but im too scared to break anything at this point lmao
     public static String hash(String pw) throws NoSuchAlgorithmException {
         //Sha256 hash cause storing passwords in plaintext is pain (for the company)
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");

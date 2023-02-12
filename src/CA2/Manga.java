@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author leong
  */
 public class Manga extends Comic implements Serializable {
-
+    //Normal getter setter code here, moving on
     private boolean translated;
 
     public Manga(String newISBN, String newTitle, int newPageNum, double newCost, String newLanguage, boolean isTranslated) {

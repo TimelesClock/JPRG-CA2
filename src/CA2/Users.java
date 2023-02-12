@@ -18,7 +18,7 @@ public class Users implements Serializable{
     private String memberID;
     private String name;
 
-    
+    //Just normal Getter Setters
     public Users(String newMemberID, String newName) throws NoSuchAlgorithmException{
         this.memberID = newMemberID;
         this.name = newName;
@@ -39,7 +39,7 @@ public class Users implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
-    
+    //Cant remember why a 3rd version of this is here but im too scared to break anything at this point lmao
     public String hash(String pw) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         messageDigest.update(pw.getBytes());

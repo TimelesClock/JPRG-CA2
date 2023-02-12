@@ -41,9 +41,10 @@ public class GUI extends javax.swing.JFrame {
 
             comicArr = rental.getComicArr();
             renteeArr = rental.getRenteeArr();
-            mangaArr = rental.getMangaArr();
+
             comicPage = 1;
             renteePage = 1;
+
             //Setting comic and rentee max pages
             comicPages = comicArr.size();
             renteePages = renteeArr.size();
@@ -53,7 +54,7 @@ public class GUI extends javax.swing.JFrame {
             //Setting Rentee Data
             displayRentee();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -600,6 +601,7 @@ public class GUI extends javax.swing.JFrame {
         try {
             rental.importComics();
             //Bunch of set text
+            
             comicArr = rental.getComicArr();
             comicPages = comicArr.size();
             comicLabel.setText(String.format("Comic %d of %d", comicPage, comicPages));
@@ -633,10 +635,12 @@ public class GUI extends javax.swing.JFrame {
             rental.importRentee();
             renteeArr= rental.getRenteeArr();
             renteePages = renteeArr.size();
+
             renteeLabel.setText(String.format("Rentee %d of %d", renteePage, renteePages));
             if(renteePages == 0){
                 return;
             }
+            
             renteeID.setText(renteeArr.get(renteePage - 1).getMemberID());
             renteeName.setText(renteeArr.get(renteePage - 1).getName());
 
@@ -646,7 +650,7 @@ public class GUI extends javax.swing.JFrame {
             for (int i = rowCount - 1; i >= 0; i--) {
                 model.removeRow(i);
             }
-
+            
             for (Comic comic : renteeArr.get(renteePage - 1).getComics()) {
                 //For every comic in rentee, add new row into the table
                 String[] rowData = {
@@ -665,6 +669,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void comicNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comicNextActionPerformed
+        //next comic details page
         try {
             if (!(comicPage + 1 > comicPages)) {
                 comicPage += 1;
@@ -676,6 +681,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_comicNextActionPerformed
 
     private void renteePrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renteePrevActionPerformed
+        //prev rentee details page IF page != 1
         try {
             if (renteePage != 1) {
 
@@ -688,6 +694,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_renteePrevActionPerformed
 
     private void renteeNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renteeNextActionPerformed
+        //Next rentee details page 
         try {
             if (renteePage != renteePages) {
                 renteePage += 1;
@@ -699,10 +706,12 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_renteeNextActionPerformed
 
     private void getStatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getStatActionPerformed
+        //Get earning stats
         sout.setText(rental.getEarning());
     }//GEN-LAST:event_getStatActionPerformed
 
     private void clearSOUTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSOUTActionPerformed
+        //Clear system message
         sout.setText("");
     }//GEN-LAST:event_clearSOUTActionPerformed
 
@@ -710,8 +719,10 @@ public class GUI extends javax.swing.JFrame {
         //Search button
         String in = searchIn.getText();
         if (renteeSearch.isSelected()) {
+            //Search member ID
             boolean flag = false;
             int index = 1;
+            //Loop through the rentee Array, if rentee member id is in array, store the index to set the rentee page
             for (Rentee renteeArr1 : renteeArr) {
                 if ((renteeArr1).getMemberID().equals(in)) {
                     flag = true;
@@ -728,8 +739,10 @@ public class GUI extends javax.swing.JFrame {
                 displayRentee();
             }
         } else {
+            //Search ISBN
             int index = 1;
             boolean flag = false;
+            //Search the comic array if comic ISBN-13 is in array, if id in array,store the idex to set the comic page
             for (Comic i : comicArr) {
                 if (i.getISBN().equals(in)) {
                     flag = true;
@@ -755,6 +768,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
     //Rerender when window is focused/clicked
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        
         displayComic();
         displayRentee();
     }//GEN-LAST:event_formWindowActivated

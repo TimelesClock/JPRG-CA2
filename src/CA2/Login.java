@@ -119,6 +119,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        //Login button clicked
         try {
             RentalSystem rental = new RentalSystem();
             boolean isLogin = rental.login(username.getText(), new String(password.getPassword()));
@@ -136,6 +137,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_loginActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
+        //If cancel button click close the current window but not ALL windows using System.exit(0)
         super.dispose();
     }//GEN-LAST:event_cancelActionPerformed
 
